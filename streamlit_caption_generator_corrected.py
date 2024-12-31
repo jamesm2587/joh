@@ -51,13 +51,31 @@ store_data = {
 
 # Function to get emoji based on item name
 def get_emoji(item_name):
+    # Define categories with keywords and corresponding emojis
     emoji_map = {
-        "pear": "🍐", "orange": "🍊", "fish": "🐟", "beef": "🥩", "chicken": "🍗", "apple": "🍎", "crab": "🦀"
+        "fish": ["tilapia", "salmon", "tuna", "cod", "trout"],
+        "meat": ["beef", "chicken", "pork", "lamb", "steak"],
+        "fruit": ["apple", "pear", "orange", "banana", "grape", "watermelon"],
+        "vegetable": ["carrot", "potato", "onion", "broccoli", "spinach"],
+        "seafood": ["shrimp", "lobster", "crab", "scallops"],
     }
-    for keyword, emoji in emoji_map.items():
-        if keyword.lower() in item_name.lower():
-            return emoji
-    return "🍽️"  # Default emoji if none matched
+
+    # Check for matching category keywords in item name
+    for category, keywords in emoji_map.items():
+        for keyword in keywords:
+            if keyword.lower() in item_name.lower():
+                # Return appropriate emoji based on category
+                if category == "fish":
+                    return "🐟"  # Fish emoji
+                elif category == "meat":
+                    return "🥩"  # Meat emoji
+                elif category == "fruit":
+                    return "🍎"  # Apple emoji (can be generalized for fruits)
+                elif category == "vegetable":
+                    return "🥕"  # Carrot emoji
+                elif category == "seafood":
+                    return "🦀"  # Crab emoji (generalized for seafood)
+    return "🍽️"  # Default emoji if no match
 
 # Streamlit App
 st.title("Caption Generator for Social Media")
