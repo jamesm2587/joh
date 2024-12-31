@@ -23,7 +23,7 @@ store_data = {
         "hashtags": "#SamsFood #Miami #FreshProduce #Carniceria #FreshMeats",
     },
     "Viva": {
-        "template": "🦀 {item_name} {price} x lb.\\n⏰ Deal until {date_range}\\n🌟 Only at Viva Supermarket\\n.\\n.\\n{hashtags}",
+        "template": "{emoji} {item_name} {price} x lb.\\n⏰ Deal until {date_range}\\n🌟 Only at Viva Supermarket\\n.\\n.\\n{hashtags}",
         "location": "",
         "hashtags": "#vivasupermarket #grocerydeals #groceryspecials #weeklysavings #weeklyspecials #grocery #abarrotes #carniceria #mariscos #seafood #produce #frutasyverduras #ahorros #ofertas",
     },
@@ -51,11 +51,13 @@ store_data = {
 
 # Function to get emoji based on item name
 def get_emoji(item_name):
-    emoji_map = {"pear": "🍐", "orange": "🍊", "fish": "🐟", "beef": "🥩", "chicken": "🍗", "apple": "🍎", "crab": "🦀"}
+    emoji_map = {
+        "pear": "🍐", "orange": "🍊", "fish": "🐟", "beef": "🥩", "chicken": "🍗", "apple": "🍎", "crab": "🦀"
+    }
     for keyword, emoji in emoji_map.items():
         if keyword.lower() in item_name.lower():
             return emoji
-    return "🍽️"
+    return "🍽️"  # Default emoji if none matched
 
 # Streamlit App
 st.title("Caption Generator for Social Media")
@@ -68,6 +70,8 @@ sale_type = st.text_input("Sale Type (if applicable)")
 if st.button("Generate Caption"):
     store_info = store_data[store]
     emoji = get_emoji(item_name)
+    
+    # Adjusting the format to match the example with line breaks between sections
     caption = store_info["template"].format(
         emoji=emoji,
         item_name=item_name,
@@ -77,4 +81,6 @@ if st.button("Generate Caption"):
         hashtags=store_info["hashtags"],
         sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
     )
-    st.text_area("Generated Caption", value=caption, height=150)
+    
+    # Display the caption with proper line breaks
+    st.text_area("Generated Caption", value=caption, height=200)
