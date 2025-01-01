@@ -3,7 +3,7 @@ import streamlit as st
 # Store-specific data with updated captions
 store_data = {
     "Ted's Fresh": {
-        "template": "3 DAYS ONLY ⏰\n{emoji} {item_name} {price} x lb.\nOnly {date_range}\n.\n.\n{hashtags}",
+        "template": "{sale_type} ⏰\n{emoji} {item_name} {price} x lb.\nOnly {date_range}\n.\n.\n{hashtags}",
         "location": "",
         "hashtags": "#Meat #Produce #USDA #Halal #tedsfreshmarket #tedsmarket #grocerydeals #weeklydeals #freshproduce #halalmeats",
     },
@@ -51,7 +51,6 @@ store_data = {
 
 # Function to get emoji based on item name
 def get_emoji(item_name):
-    # Define categories with keywords and corresponding emojis
     emoji_map = {
         "fish": ["tilapia", "salmon", "tuna", "cod", "trout"],
         "meat": ["beef", "chicken", "pork", "lamb", "steak"],
@@ -59,23 +58,20 @@ def get_emoji(item_name):
         "vegetable": ["carrot", "potato", "onion", "broccoli", "spinach"],
         "seafood": ["shrimp", "lobster", "crab", "scallops"],
     }
-
-    # Check for matching category keywords in item name
     for category, keywords in emoji_map.items():
         for keyword in keywords:
             if keyword.lower() in item_name.lower():
-                # Return appropriate emoji based on category
                 if category == "fish":
-                    return "🐟"  # Fish emoji
+                    return "🐟"
                 elif category == "meat":
-                    return "🥩"  # Meat emoji
+                    return "🥩"
                 elif category == "fruit":
-                    return "🍎"  # Apple emoji (can be generalized for fruits)
+                    return "🍎"
                 elif category == "vegetable":
-                    return "🥕"  # Carrot emoji
+                    return "🥕"
                 elif category == "seafood":
-                    return "🦀"  # Crab emoji (generalized for seafood)
-    return "🍽️"  # Default emoji if no match
+                    return "🦀"
+    return "🍽️"
 
 # Streamlit App
 st.title("Caption Generator for Social Media")
@@ -83,13 +79,17 @@ store = st.selectbox("Select Store", list(store_data.keys()))
 item_name = st.text_input("Item Name")
 price = st.text_input("Price")
 date_range = st.text_input("Date Range")
-sale_type = st.text_input("Sale Type (if applicable)")
+
+# Conditional dropdown for sale type
+sale_type = ""
+if store in ["Ted's Fresh", "IFM Market"]:
+    sale_type = st.selectbox("Select Sale Type", ["3 Day Sale", "4 Day Sale"])
 
 if st.button("Generate Caption"):
     store_info = store_data[store]
     emoji = get_emoji(item_name)
-    
-    # Adjusting the format to match the example with line breaks between sections
+
+    # Fill in the template with dynamic content
     caption = store_info["template"].format(
         emoji=emoji,
         item_name=item_name,
@@ -99,6 +99,6 @@ if st.button("Generate Caption"):
         hashtags=store_info["hashtags"],
         sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
     )
-    
+
     # Display the caption with proper line breaks
     st.text_area("Generated Caption", value=caption, height=200)
