@@ -89,7 +89,7 @@ if price:
     try:
         price = float(price)
         if price.is_integer():
-            price = f"{int(price)} cents"  # Treat as cents if it's an integer
+            price = f"{int(price)}¢"  # Use the cent symbol (¢) if it's an integer
         else:
             price = f"${price:.2f}"  # Format as dollars if it's a decimal
     except ValueError:
