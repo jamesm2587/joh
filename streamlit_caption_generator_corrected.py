@@ -87,7 +87,8 @@ with col3:
 
 with col1:
     price_format = st.radio("Price Format", ["¢ x lb", "¢ ea"])
-    price = st.text_input("Enter Price", value="") if price_format else ""
+    price = st.text_input("Enter Price", value="")
+    formatted_price = f"{price} {price_format}" if price else "Price not entered"
 
 with col2:
     date_range = st.date_input(
@@ -105,7 +106,6 @@ with col3:
 if st.button("Generate Caption"):
     store_info = store_data[store]
     emoji_used = manual_emoji or suggested_emoji
-    formatted_price = f"{price} {price_format}" if price else "Price not entered"
 
     caption = store_info["template"].format(
         emoji=emoji_used,
