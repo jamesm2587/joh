@@ -30,41 +30,49 @@ store_data = {
         "template": "{sale_type} ⏰ {date_range}\n{emoji} {item_name} {price}.\n.\n.\n{hashtags}",
         "location": "",
         "hashtags": "#Meat #Produce #USDA #Halal #tedsfreshmarket #tedsmarket #grocerydeals #weeklydeals #freshproduce #halalmeats",
+        "has_sale_type": True,
     },
     "International Fresh Market": {
         "template": "🌟 {sale_type} ⏰ {date_range}\n{emoji} {item_name} {price}\n.\n.\n{hashtags}",
         "location": "",
         "hashtags": "#Naperville #Fresh #Market #Produce #Meat #internationalfreshmarket",
+        "has_sale_type": True,
     },
     "Fiesta Market": {
         "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
         "location": "9710 Main St. Lamont, Ca.",
         "hashtags": "#fiestamarket #grocerydeals #weeklyspecials #freshproduce #meats",
+        "has_sale_type": False,
     },
     "Viva": {
         "template": "{emoji} {item_name} {price}.\n⏰ Deal from {date_range}\n🌟 Only at Viva Supermarket\n.\n.\n{hashtags}",
         "location": "",
         "hashtags": "#vivasupermarket #grocerydeals #groceryspecials #weeklysavings #weeklyspecials #grocery #abarrotes #carniceria #mariscos #seafood #produce #frutasyverduras #ahorros #ofertas",
+        "has_sale_type": False,
     },
     "La Princesa Watsonville": {
         "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
         "location": "123 Main St. Watsonville, Ca.",
         "hashtags": "#laprincesa #watsonville #grocerydeals #weeklyspecials #freshproduce #meats",
+        "has_sale_type": False,
     },
     "Sam's Food": {
         "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
         "location": "456 Elm St. Fresno, Ca.",
         "hashtags": "#samsfood #fresno #grocerydeals #weeklyspecials #freshproduce #meats",
+        "has_sale_type": False,
     },
     "Puesto Market": {
         "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
         "location": "789 Oak St. Bakersfield, Ca.",
         "hashtags": "#puestomarket #bakersfield #grocerydeals #weeklyspecials #freshproduce #meats",
+        "has_sale_type": False,
     },
     "Rranch": {
         "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
         "location": "987 Pine St. Sacramento, Ca.",
         "hashtags": "#rranch #sacramento #grocerydeals #weeklyspecials #freshproduce #meats",
+        "has_sale_type": False,
     },
 }
 
@@ -86,16 +94,14 @@ with col3:
     manual_emoji = st.text_input("Choose Emoji Manually", value=suggested_emoji)
 
 with col1:
-    price_format = st.radio("Price Format", ["$ x lb", "$ x ea"])
     price = st.text_input("Enter Price", value="")
-    
     # Dynamic price formatting
     if price:
         price_value = float(price)
         if price_value < 1:
-            formatted_price = f"{int(price_value * 100)}¢ {price_format[2:]}"  # Convert to cents
+            formatted_price = f"{int(price_value * 100)}¢"
         else:
-            formatted_price = f"${price} {price_format[2:]}"  # Use dollars
+            formatted_price = f"${price}"
     else:
         formatted_price = "Price not entered"
 
@@ -110,7 +116,10 @@ with col2:
         formatted_date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
 
 with col3:
-    sale_type = st.text_input("Sale Type (e.g., 3 DAY SALE)", value="3 DAY SALE")
+    if store_data[store]["has_sale_type"]:
+        sale_type = st.selectbox("Sale Type", ["3 DAY SALE", "4 DAY SALE"], index=0)
+    else:
+        sale_type = "Sale Type not required"
 
 if st.button("Generate Caption"):
     store_info = store_data[store]
