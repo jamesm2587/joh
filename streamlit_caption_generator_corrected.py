@@ -76,8 +76,12 @@ store = st.selectbox("Select Store", list(store_data.keys()))
 # Item Input
 item_name = st.text_input("Item Name")
 
-# Price Input
-price = st.text_input("Price")
+# Price Format Selection (Radio buttons for per lb or per each)
+price_format = st.radio("Select Price Format", ("Per lb", "Each"))
+
+# Price Input (activates after choosing price format)
+if price_format:
+    price = st.text_input(f"Enter price per {price_format.lower()}")
 
 # Date range picker
 st.write("Select Date Range")
