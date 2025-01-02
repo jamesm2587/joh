@@ -8,6 +8,8 @@ st.markdown(
     body {
         background: linear-gradient(135deg, #f3f4f7, #e4e7ed);
         font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
     }
     .stButton>button {
         background: linear-gradient(135deg, #6a11cb, #2575fc);
@@ -32,12 +34,22 @@ st.markdown(
         border-radius: 15px;
         background: rgba(255, 255, 255, 0.9);
         box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+        margin-top: 20px; /* Ensures no unwanted spacing at the top */
     }
     .input-icon {
         width: 20px;
         height: 20px;
         vertical-align: middle;
         margin-right: 10px;
+    }
+    .stTextInput, .stSelectbox, .stRadio, .stDateInput {
+        display: inline-block;
+        width: calc(100% - 40px); /* Adjust width to make space for icons */
+    }
+    .input-wrapper {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
     }
     </style>
     """,
@@ -119,24 +131,41 @@ with st.container():
 
     col1, col2 = st.columns([2, 1])
     with col1:
-        st.image("https://img.icons8.com/ios-filled/50/808080/shopping-cart.png", width=20, use_container_width=False)  # Item Name icon
+        # Item Name icon
+        st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
+        st.image("https://img.icons8.com/ios-filled/50/808080/shopping-cart.png", class_="input-icon", use_container_width=False)
         store = st.selectbox("Store", list(store_data.keys()), key="store")
         item_name = st.text_input("Item Name", key="item_name")
+        st.markdown('</div>', unsafe_allow_html=True)
         
-        st.image("https://img.icons8.com/ios-filled/50/808080/price-tag.png", width=20, use_container_width=False)  # Price icon
+        # Price icon
+        st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
+        st.image("https://img.icons8.com/ios-filled/50/808080/price-tag.png", class_="input-icon", use_container_width=False)
         price_format = st.radio("Price Format", ("x lb", "x ea"), key="price_format")
-    with col2:
-        price = st.text_input(f"Enter price {price_format}", key="price")
+        st.markdown('</div>', unsafe_allow_html=True)
         
-        st.image("https://img.icons8.com/ios-filled/50/808080/calendar.png", width=20, use_container_width=False)  # Calendar icon
+    with col2:
+        # Price input field
+        st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
+        st.image("https://img.icons8.com/ios-filled/50/808080/price-tag.png", class_="input-icon", use_container_width=False)
+        price = st.text_input(f"Enter price {price_format}", key="price")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        # Calendar icons for dates
+        st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
+        st.image("https://img.icons8.com/ios-filled/50/808080/calendar.png", class_="input-icon", use_container_width=False)
         start_date = st.date_input("Start Date", datetime.today(), key="start_date")
         end_date = st.date_input("End Date", start_date + timedelta(days=6), key="end_date")
         date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
-        
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        # Sale Type icon (if necessary)
         sale_type = ""
         if store in ["Ted's Fresh", "IFM Market"]:
-            st.image("https://img.icons8.com/ios-filled/50/808080/tag.png", width=20, use_container_width=False)  # Sale Type icon
+            st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
+            st.image("https://img.icons8.com/ios-filled/50/808080/tag.png", class_="input-icon", use_container_width=False)
             sale_type = st.selectbox("Sale Type", ["3 Day Sale", "4 Day Sale"], key="sale_type")
+            st.markdown('</div>', unsafe_allow_html=True)
 
     # Format price
     if price:
