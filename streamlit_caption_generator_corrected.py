@@ -12,18 +12,20 @@ st.markdown(
         padding: 0;
     }
     .stButton>button {
-        background: linear-gradient(135deg, #6a11cb, #2575fc);
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s ease;
-    }
-   .stButton>button:hover {
+    background: linear-gradient(135deg, #6a11cb, #2575fc); /* Initial gradient color */
+    color: white; /* Text color */
+    padding: 10px 20px; /* Padding around the button */
+    border: none; /* Removes any default borders */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds shadow for depth */
+    transition: transform 0.2s ease; /* Smooth scaling on hover */
+}
+
+.stButton>button:hover {
     transform: scale(1.05); /* Scales button slightly when hovered */
-    color: white; /* Ensures text stays white */
-    }
+    background: linear-gradient(135deg, #6a11cb, #2575fc); /* Keep original background color on hover */
+    color: white; /* Ensure text remains white */
+}
     .stTextArea textarea {
         background: rgba(255, 255, 255, 0.8);
         backdrop-filter: blur(10px);
