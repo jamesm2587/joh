@@ -1,49 +1,39 @@
 import streamlit as st
 from datetime import datetime, timedelta
-import re
-from langdetect import detect
 
-# Expanded emoji mapping for both English and Spanish
+# Expanded emoji mapping
 emoji_mapping = {
-    # Fruits
-    "apple": "🍎", "manzana": "🍎", "red apple": "🍎", "green apple": "🍏", 
-    "banana": "🍌", "plátano": "🍌", "mango": "🥭", "mangoes": "🥭", 
-    "watermelon": "🍉", "sandía": "🍉", "orange": "🍊", "naranja": "🍊", 
-    "pear": "🍐", "pera": "🍐", "peach": "🍑", "durazno": "🍑", 
-    "strawberry": "🍓", "fresa": "🍓", "cherry": "🍒", "cereza": "🍒", 
-    "kiwi": "🥝", "kiwis": "🥝", "pineapple": "🍍", "piña": "🍍", 
-    "blueberry": "🫐", "arándano": "🫐", "avocado": "🥑", "aguacate": "🥑", 
-
-    # Vegetables
-    "carrot": "🥕", "zanahoria": "🥕", "broccoli": "🥦", "brócoli": "🥦", 
-    "corn": "🌽", "maíz": "🌽", "lettuce": "🥬", "lechuga": "🥬", 
-    "tomato": "🍅", "jitomate": "🍅", "potato": "🥔", "papa": "🥔", 
-    "onion": "🧅", "cebolla": "🧅", "garlic": "🧄", "ajo": "🧄", 
-
-    # Meats
-    "beef": "🥩", "carne de res": "🥩", "chicken": "🍗", "pollo": "🍗", 
-    "pork": "🐖", "cerdo": "🐖", "turkey": "🦃", "pavo": "🦃", 
-    "lamb": "🐑", "cordero": "🐑", "fish": "🐟", "pescado": "🐟", 
-    "shrimp": "🍤", "camarón": "🍤", "crab": "🦀", "cangrejo": "🦀", 
-    "lobster": "🦞", "langosta": "🦞", "salmon": "🐟", "salmón": "🐟", 
-    "tilapia": "🐟", "tilapia": "🐟", 
-
-    # Dairy
-    "milk": "🥛", "leche": "🥛", "cheese": "🧀", "queso": "🧀", 
-    "butter": "🧈", "mantequilla": "🧈", "egg": "🥚", "huevo": "🥚", 
-    "yogurt": "🥄", "yogur": "🥄", 
-
-    # Bakery
-    "bread": "🍞", "pan": "🍞", "rice": "🍚", "arroz": "🍚", 
-    "pasta": "🍝", "espaguetis": "🍝", "pizza": "🍕", "pizza": "🍕", 
-    "burger": "🍔", "hamburguesa": "🍔", "taco": "🌮", "burrito": "🌯", 
-    "sushi": "🍣", "sushi": "🍣", 
-
-    # Sweets
-    "dessert": "🍰", "pastel": "🍰", "cake": "🎂", "torta": "🎂", 
-    "cookie": "🍪", "galleta": "🍪", "ice cream": "🍦", "helado": "🍦", 
-    "chocolate": "🍫", "chocolate": "🍫",
+    "apple": "🍎", "banana": "🍌", "grape": "🍇", "mango": "🥭", "watermelon": "🍉",
+    "orange": "🍊", "pear": "🍐", "peach": "🍑", "strawberry": "🍓", "cherry": "🍒",
+    "kiwi": "🥝", "pineapple": "🍍", "blueberry": "🫐", "avocado": "🥑",
+    "carrot": "🥕", "broccoli": "🥦", "corn": "🌽", "lettuce": "🥬", "tomato": "🍅",
+    "potato": "🥔", "onion": "🧅", "garlic": "🧄", "pepper": "🌶️", "cucumber": "🥒",
+    "mushroom": "🍄", "beef": "🥩", "chicken": "🍗", "pork": "🐖", "turkey": "🦃",
+    "lamb": "🐑", "fish": "🐟", "shrimp": "🍤", "crab": "🦀", "lobster": "🦞",
+    "salmon": "🐟", "tilapia": "🐟", "milk": "🥛", "cheese": "🧀", "butter": "🧈",
+    "egg": "🥚", "yogurt": "🥄", "bread": "🍞", "rice": "🍚", "pasta": "🍝",
+    "pizza": "🍕", "burger": "🍔", "taco": "🌮", "burrito": "🌯", "sushi": "🍣",
+    "dessert": "🍰", "cake": "🎂", "cookie": "🍪", "ice cream": "🍦", "chocolate": "🍫"
 }
+
+# Function to fetch emoji based on item name
+def get_emoji(item_name):
+    for key in emoji_mapping:
+        if key in item_name.lower():
+            return emoji_mapping[key]
+    return "🍽️"  # Default emoji
+
+# Simple Language Detection (based on keywords)
+def detect_language(text):
+    spanish_keywords = ["el", "la", "de", "y", "es", "en", "para", "un", "una", "con"]
+    english_keywords = ["the", "and", "is", "in", "for", "a", "with"]
+    
+    # Check for Spanish or English keywords
+    if any(keyword in text.lower() for keyword in spanish_keywords):
+        return "spanish"
+    elif any(keyword in text.lower() for keyword in english_keywords):
+        return "english"
+    return "english"  # Default to English if no keywords match
 
 # Store-specific data
 store_data = {
@@ -89,31 +79,6 @@ store_data = {
     }
 }
 
-# Detect language (English or Spanish)
-def detect_language(text):
-    try:
-        return detect(text)  # Detects the language
-    except:
-        return "en"  # Default to English if detection fails
-
-# Function to fetch emoji with language detection and regex matching
-def get_emoji(item_name):
-    language = detect_language(item_name)  # Detect language ('en' or 'es')
-    item_name = item_name.lower()
-
-    if language == "es":
-        # Match against Spanish terms in the emoji_mapping
-        for key in emoji_mapping:
-            if re.search(r'\b' + re.escape(key) + r'\b', item_name):  # Word boundary for exact match
-                return emoji_mapping[key]
-    else:
-        # Match against English terms
-        for key in emoji_mapping:
-            if re.search(r'\b' + re.escape(key) + r'\b', item_name):  # Word boundary for exact match
-                return emoji_mapping[key]
-    
-    return "🍽️"  # Default emoji
-
 # Streamlit App
 st.title("Enhanced Caption Generator")
 
@@ -145,8 +110,13 @@ if store in ["Ted's Fresh", "IFM Market"]:
 # Generate caption
 if st.button("Generate Caption"):
     store_info = store_data[store]
-    emoji = get_emoji(item_name)  # Get emoji based on item name
-
+    emoji = get_emoji(item_name)
+    
+    # Detect language for emoji mapping
+    language = detect_language(item_name)
+    if language == "spanish":
+        emoji = "🇲🇽"  # Adjust this based on Spanish preference if needed
+    
     # Ensure price format reflects correctly in the caption
     formatted_price = f"${price} {price_format}" if price else "Price not entered"
 
