@@ -20,8 +20,9 @@ st.markdown(
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         transition: transform 0.2s ease;
     }
-    .stButton>button:hover {
-        transform: scale(1.05);
+   .stButton>button:hover {
+    transform: scale(1.05); /* Scales button slightly when hovered */
+    color: white; /* Ensures text stays white */
     }
     .stTextArea textarea {
         background: rgba(255, 255, 255, 0.8);
