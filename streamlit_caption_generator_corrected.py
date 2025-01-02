@@ -18,13 +18,18 @@ st.markdown(
     border: none; /* Removes any default borders */
     border-radius: 8px; /* Rounded corners */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds shadow for depth */
-    transition: transform 0.2s ease; /* Smooth scaling on hover */
+    transition: transform 0.2s ease, background 0.3s ease; /* Smooth scaling on hover */
 }
 
 .stButton>button:hover {
     transform: scale(1.05); /* Scales button slightly when hovered */
     background: linear-gradient(135deg, #6a11cb, #2575fc); /* Keep original background color on hover */
     color: white; /* Ensure text remains white */
+}
+
+.stButton>button:active {
+    background: linear-gradient(135deg, #6a11cb, #2575fc); /* Ensure background stays the same when clicked */
+    color: white; /* Keep text white */
 }
     .stTextArea textarea {
         background: rgba(255, 255, 255, 0.8);
