@@ -3,66 +3,17 @@ from datetime import datetime, timedelta
 
 # Expanded emoji mapping
 emoji_mapping = {
-    # Fruits
-    "apple": "🍎",
-    "banana": "🍌",
-    "grape": "🍇",
-    "mango": "🥭",
-    "watermelon": "🍉",
-    "orange": "🍊",
-    "pear": "🍐",
-    "peach": "🍑",
-    "strawberry": "🍓",
-    "cherry": "🍒",
-    "kiwi": "🥝",
-    "pineapple": "🍍",
-    "blueberry": "🫐",
-    "avocado": "🥑",
-    # Vegetables
-    "carrot": "🥕",
-    "broccoli": "🥦",
-    "corn": "🌽",
-    "lettuce": "🥬",
-    "tomato": "🍅",
-    "potato": "🥔",
-    "onion": "🧅",
-    "garlic": "🧄",
-    "pepper": "🌶️",
-    "cucumber": "🥒",
-    "mushroom": "🍄",
-    # Meats
-    "beef": "🥩",
-    "chicken": "🍗",
-    "pork": "🐖",
-    "turkey": "🦃",
-    "lamb": "🐑",
-    # Seafood
-    "fish": "🐟",
-    "shrimp": "🍤",
-    "crab": "🦀",
-    "lobster": "🦞",
-    "salmon": "🐟",
-    "tilapia": "🐟",
-    # Dairy
-    "milk": "🥛",
-    "cheese": "🧀",
-    "butter": "🧈",
-    "egg": "🥚",
-    "yogurt": "🥄",
-    # Miscellaneous
-    "bread": "🍞",
-    "rice": "🍚",
-    "pasta": "🍝",
-    "pizza": "🍕",
-    "burger": "🍔",
-    "taco": "🌮",
-    "burrito": "🌯",
-    "sushi": "🍣",
-    "dessert": "🍰",
-    "cake": "🎂",
-    "cookie": "🍪",
-    "ice cream": "🍦",
-    "chocolate": "🍫",
+    "apple": "🍎", "banana": "🍌", "grape": "🍇", "mango": "🥭", "watermelon": "🍉",
+    "orange": "🍊", "pear": "🍐", "peach": "🍑", "strawberry": "🍓", "cherry": "🍒",
+    "kiwi": "🥝", "pineapple": "🍍", "blueberry": "🫐", "avocado": "🥑",
+    "carrot": "🥕", "broccoli": "🥦", "corn": "🌽", "lettuce": "🥬", "tomato": "🍅",
+    "potato": "🥔", "onion": "🧅", "garlic": "🧄", "pepper": "🌶️", "cucumber": "🥒",
+    "mushroom": "🍄", "beef": "🥩", "chicken": "🍗", "pork": "🐖", "turkey": "🦃",
+    "lamb": "🐑", "fish": "🐟", "shrimp": "🍤", "crab": "🦀", "lobster": "🦞",
+    "salmon": "🐟", "tilapia": "🐟", "milk": "🥛", "cheese": "🧀", "butter": "🧈",
+    "egg": "🥚", "yogurt": "🥄", "bread": "🍞", "rice": "🍚", "pasta": "🍝",
+    "pizza": "🍕", "burger": "🍔", "taco": "🌮", "burrito": "🌯", "sushi": "🍣",
+    "dessert": "🍰", "cake": "🎂", "cookie": "🍪", "ice cream": "🍦", "chocolate": "🍫"
 }
 
 # Function to fetch emoji
@@ -101,4 +52,57 @@ store_data = {
     },
     "Sam's Food": {
         "template": "{emoji} {item_name} {price} x lb.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
-        "location"
+        "location": "456 Elm St. Fresno, Ca.",
+        "hashtags": "#samsfood #fresno #grocerydeals #weeklyspecials #freshproduce #meats",
+    },
+    "Puesto Market": {
+        "template": "{emoji} {item_name} {price} x lb.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "789 Oak St. Bakersfield, Ca.",
+        "hashtags": "#puestomarket #bakersfield #grocerydeals #weeklyspecials #freshproduce #meats",
+    },
+    "Rranch": {
+        "template": "{emoji} {item_name} {price} x lb.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "987 Pine St. Sacramento, Ca.",
+        "hashtags": "#rranch #sacramento #grocerydeals #weeklyspecials #freshproduce #meats",
+    }
+}
+
+# Streamlit App
+st.title("Enhanced Caption Generator")
+
+# Store Selection
+store = st.selectbox("Select Store", list(store_data.keys()))
+
+# Item Input
+item_name = st.text_input("Item Name")
+
+# Price Input
+price = st.text_input("Price")
+
+# Date range picker
+st.write("Select Date Range")
+start_date = st.date_input("Start Date", datetime.today())
+end_date = st.date_input("End Date", start_date + timedelta(days=6))
+date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
+
+# Sale type dropdown for specific stores
+sale_type = ""
+if store in ["Ted's Fresh", "IFM Market"]:
+    sale_type = st.selectbox("Select Sale Type", ["3 Day Sale", "4 Day Sale"])
+
+# Generate caption
+if st.button("Generate Caption"):
+    store_info = store_data[store]
+    emoji = get_emoji(item_name)
+
+    caption = store_info["template"].format(
+        emoji=emoji,
+        item_name=item_name,
+        price=price,
+        date_range=date_range,
+        location=store_info["location"] if store_info["location"] else "",
+        hashtags=store_info["hashtags"],
+        sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
+    )
+
+    st.text_area("Generated Caption", value=caption, height=200)
