@@ -86,9 +86,18 @@ with col3:
     manual_emoji = st.text_input("Choose Emoji Manually", value=suggested_emoji)
 
 with col1:
-    price_format = st.radio("Price Format", [" x lb", " x ea"])
+    price_format = st.radio("Price Format", ["$ x lb", "$ x ea"])
     price = st.text_input("Enter Price", value="")
-    formatted_price = f"{price} {price_format}" if price else "Price not entered"
+    
+    # Dynamic price formatting
+    if price:
+        price_value = float(price)
+        if price_value < 1:
+            formatted_price = f"{int(price_value * 100)}¢ {price_format[2:]}"  # Convert to cents
+        else:
+            formatted_price = f"${price} {price_format[2:]}"  # Use dollars
+    else:
+        formatted_price = "Price not entered"
 
 with col2:
     date_range = st.date_input(
