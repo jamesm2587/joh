@@ -1,7 +1,7 @@
 import streamlit as st
 from datetime import datetime, timedelta
 
-# Expanded emoji mapping
+# Emoji mapping
 emoji_mapping = {
     "apple": "🍎", "banana": "🍌", "grape": "🍇", "mango": "🥭", "watermelon": "🍉",
     "orange": "🍊", "pear": "🍐", "peach": "🍑", "strawberry": "🍓", "cherry": "🍒",
@@ -16,7 +16,7 @@ emoji_mapping = {
     "dessert": "🍰", "cake": "🎂", "cookie": "🍪", "ice cream": "🍦", "chocolate": "🍫"
 }
 
-# Function to fetch emoji based on item name
+# Function to suggest emojis
 def get_suggested_emoji(item_name):
     item_name_lower = item_name.lower()
     for key, emoji in emoji_mapping.items():
@@ -24,15 +24,15 @@ def get_suggested_emoji(item_name):
             return emoji
     return "🍽️"  # Default emoji
 
-# Store-specific data
+# Store templates
 store_data = {
     "Ted's Fresh": {
-        "template": "{sale_type} ⏰\n{emoji} {item_name} {price}.\nOnly {date_range}\n.\n.\n{hashtags}",
+        "template": "{sale_type} ⏰ {date_range}\n{emoji} {item_name} {price}.\n.\n.\n{hashtags}",
         "location": "",
         "hashtags": "#Meat #Produce #USDA #Halal #tedsfreshmarket #tedsmarket #grocerydeals #weeklydeals #freshproduce #halalmeats",
     },
     "International Fresh Market": {
-        "template": "{sale_type} ⏰\n{emoji} {item_name} {price}.\nOnly {date_range}\n.\n.\n{hashtags}",
+        "template": "🌟 {sale_type} ⏰ {date_range}\n{emoji} {item_name} {price}\n.\n.\n{hashtags}",
         "location": "",
         "hashtags": "#Naperville #Fresh #Market #Produce #Meat #internationalfreshmarket",
     },
@@ -65,67 +65,55 @@ store_data = {
         "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
         "location": "987 Pine St. Sacramento, Ca.",
         "hashtags": "#rranch #sacramento #grocerydeals #weeklyspecials #freshproduce #meats",
-    }
+    },
 }
 
-# Streamlit App Layout
-st.set_page_config(page_title="Enhanced Caption Generator", layout="wide")
+# Streamlit Layout
+st.set_page_config(page_title="Caption Generator", layout="wide")
 
-# Title and columns for square layout
 st.title("Enhanced Caption Generator")
 col1, col2, col3 = st.columns([1, 1, 1])
 
-# Store selection
 with col1:
     store = st.selectbox("Select Store", list(store_data.keys()))
 
-# Item Input and Suggested Emoji
 with col2:
     item_name = st.text_input("Item Name")
     suggested_emoji = get_suggested_emoji(item_name)
     st.write(f"Suggested Emoji: {suggested_emoji}")
 
-# Manual Emoji Override
 with col3:
-    manual_emoji = st.text_input("Choose an Emoji Manually", value=suggested_emoji)
+    manual_emoji = st.text_input("Choose Emoji Manually", value=suggested_emoji)
 
-# Price Format and Input
 with col1:
-    price_format = st.radio("Price Format", ["x lb", "x ea"])
+    price_format = st.radio("Price Format", ["¢ x lb", "¢ ea"])
     price = st.text_input("Enter Price", value="") if price_format else ""
 
-# Date Range Picker
 with col2:
     date_range = st.date_input(
         "Select Date Range",
-        value=(datetime.today(), datetime.today() + timedelta(days=6))
+        value=(datetime.today(), datetime.today() + timedelta(days=2))
     )
 
     if isinstance(date_range, tuple):
         start_date, end_date = date_range
         formatted_date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
 
-# Sale Type
 with col3:
-    sale_type = st.selectbox(
-        "Sale Type" if store in ["Ted's Fresh", "International Fresh Market"] else "N/A",
-        options=["3 Day Sale", "4 Day Sale"] if store in ["Ted's Fresh", "International Fresh Market"] else []
-    )
+    sale_type = st.text_input("Sale Type (e.g., 3 DAY SALE)", value="3 DAY SALE")
 
-# Caption Generator
 if st.button("Generate Caption"):
     store_info = store_data[store]
     emoji_used = manual_emoji or suggested_emoji
-    formatted_price = f"${price} {price_format}" if price else "Price not entered"
+    formatted_price = f"{price} {price_format}" if price else "Price not entered"
 
     caption = store_info["template"].format(
         emoji=emoji_used,
         item_name=item_name,
         price=formatted_price,
         date_range=formatted_date_range,
-        location=store_info["location"],
+        sale_type=sale_type,
         hashtags=store_info["hashtags"],
-        sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
     )
 
     st.text_area("Generated Caption", value=caption, height=200)
