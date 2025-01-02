@@ -80,6 +80,7 @@ item_name = st.text_input("Item Name")
 price_format = st.radio("Select Price Format", ("Per lb", "Each"))
 
 # Price Input (activates after choosing price format)
+price = None
 if price_format:
     price = st.text_input(f"Enter price per {price_format.lower()}")
 
@@ -99,10 +100,13 @@ if st.button("Generate Caption"):
     store_info = store_data[store]
     emoji = get_emoji(item_name)
 
+    # Ensure price format reflects correctly in the caption
+    formatted_price = f"{price} {price_format.lower()}" if price else "Price not entered"
+
     caption = store_info["template"].format(
         emoji=emoji,
         item_name=item_name,
-        price=price,
+        price=formatted_price,
         date_range=date_range,
         location=store_info["location"] if store_info["location"] else "",
         hashtags=store_info["hashtags"],
