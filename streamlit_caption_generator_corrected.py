@@ -30,11 +30,49 @@ store_data = {
         "template": "{sale_type} ⏰\n{emoji} {item_name} {price}.\nOnly {date_range}\n.\n.\n{hashtags}",
         "location": "",
         "hashtags": "#Meat #Produce #USDA #Halal #tedsfreshmarket #tedsmarket #grocerydeals #weeklydeals #freshproduce #halalmeats",
+        "has_sale_type": True,
     },
     "IFM Market": {
         "template": "{sale_type} ⏰\n{emoji} {item_name} {price}.\nOnly {date_range}\n.\n.\n{hashtags}",
         "location": "",
         "hashtags": "#Naperville #Fresh #Market #Produce #Meat #internationalfreshmarket",
+        "has_sale_type": True,
+    },
+    "Fiesta Market": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "9710 Main St. Lamont, Ca.",
+        "hashtags": "#fiestamarket #grocerydeals #weeklyspecials #freshproduce #meats",
+        "has_sale_type": False,
+    },
+    "Viva": {
+        "template": "{emoji} {item_name} {price}.\n⏰ Deal from {date_range}\n🌟 Only at Viva Supermarket\n.\n.\n{hashtags}",
+        "location": "",
+        "hashtags": "#vivasupermarket #grocerydeals #groceryspecials #weeklysavings #weeklyspecials #grocery #abarrotes #carniceria #mariscos #seafood #produce #frutasyverduras #ahorros #ofertas",
+        "has_sale_type": False,
+    },
+    "La Princesa Watsonville": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "123 Main St. Watsonville, Ca.",
+        "hashtags": "#laprincesa #watsonville #grocerydeals #weeklyspecials #freshproduce #meats",
+        "has_sale_type": False,
+    },
+    "Sam's Food": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "456 Elm St. Fresno, Ca.",
+        "hashtags": "#samsfood #fresno #grocerydeals #weeklyspecials #freshproduce #meats",
+        "has_sale_type": False,
+    },
+    "Puesto Market": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "789 Oak St. Bakersfield, Ca.",
+        "hashtags": "#puestomarket #bakersfield #grocerydeals #weeklyspecials #freshproduce #meats",
+        "has_sale_type": False,
+    },
+    "Rranch": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "987 Pine St. Sacramento, Ca.",
+        "hashtags": "#rranch #sacramento #grocerydeals #weeklyspecials #freshproduce #meats",
+        "has_sale_type": False,
     },
 }
 
@@ -85,7 +123,7 @@ if st.button("Generate Caption"):
         date_range=date_range,
         location=store_info["location"] if store_info["location"] else "",
         hashtags=store_info["hashtags"],
-        sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
+        sale_type=sale_type if store_info["has_sale_type"] else "",
     )
 
     st.text_area("Generated Caption", value=caption, height=200)
