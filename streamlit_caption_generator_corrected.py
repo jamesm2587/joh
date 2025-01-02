@@ -1,4 +1,5 @@
 import streamlit as st
+from datetime import datetime, timedelta
 
 # Store-specific data with updated captions
 store_data = {
@@ -78,7 +79,12 @@ st.title("Caption Generator for Social Media")
 store = st.selectbox("Select Store", list(store_data.keys()))
 item_name = st.text_input("Item Name")
 price = st.text_input("Price")
-date_range = st.text_input("Date Range")
+
+# Date range picker using calendar
+st.write("Select Date Range")
+start_date = st.date_input("Start Date", datetime.today())
+end_date = st.date_input("End Date", start_date + timedelta(days=6))
+date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
 
 # Conditional dropdown for sale type
 sale_type = ""
