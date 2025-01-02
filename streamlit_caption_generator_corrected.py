@@ -86,7 +86,7 @@ with col3:
     manual_emoji = st.text_input("Choose Emoji Manually", value=suggested_emoji)
 
 with col1:
-    price_format = st.radio("Price Format", ["¢ x lb", "¢ ea"])
+    price_format = st.radio("Price Format", [" x lb", " x ea"])
     price = st.text_input("Enter Price", value="")
     formatted_price = f"{price} {price_format}" if price else "Price not entered"
 
