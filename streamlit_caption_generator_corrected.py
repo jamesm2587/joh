@@ -1,91 +1,44 @@
 import streamlit as st
 from datetime import datetime, timedelta
-import json
 
-# Custom CSS for a modern look
+# Custom CSS for gradients, shadows, and glass effects
 st.markdown(
     """
     <style>
-    /* Modern gradient background */
-    .stApp {
-        background: linear-gradient(135deg, #f6f9fc, #edf2f7);
+    body {
+        background: linear-gradient(135deg, #f3f4f7, #e4e7ed);
+        font-family: 'Arial', sans-serif;
     }
-    
-    /* Card-like containers */
-    .element-container {
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 15px;
-        padding: 1.5rem;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        margin-bottom: 1rem;
-    }
-    
-    /* Enhanced button styling */
     .stButton>button {
-        width: 100%;
-        background: linear-gradient(135deg, #4F46E5, #3B82F6);
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
         color: white;
-        padding: 0.75rem 1.5rem;
+        padding: 10px 20px;
         border: none;
-        border-radius: 10px;
-        font-weight: 600;
-        box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
-        transition: all 0.3s ease;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease;
     }
-    
     .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 8px rgba(79, 70, 229, 0.3);
+        transform: scale(1.05);
     }
-    
-    /* Input field styling */
-    .stTextInput>div>div>input {
-        border-radius: 8px;
-        border: 1px solid #e2e8f0;
-        padding: 0.5rem 1rem;
-        background: white;
+    .stTextArea textarea {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-    
-    /* Select box styling */
-    .stSelectbox>div>div>select {
-        border-radius: 8px;
-        border: 1px solid #e2e8f0;
-        padding: 0.5rem 1rem;
-        background: white;
-    }
-    
-    /* Text area styling */
-    .stTextArea>div>div>textarea {
-        border-radius: 8px;
-        border: 1px solid #e2e8f0;
-        padding: 1rem;
-        background: white;
-        font-family: 'Courier New', monospace;
-    }
-    
-    /* Header styling */
-    h1 {
-        color: #1e293b;
-        font-weight: 700;
-        text-align: center;
-        padding: 1rem 0;
-        margin-bottom: 2rem;
-    }
-    
-    /* Radio button styling */
-    .stRadio>div {
-        background: white;
-        padding: 1rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    .container {
+        padding: 20px;
+        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# Emoji mapping
+# Expanded emoji mapping
 emoji_mapping = {
     "apple": "🍎", "banana": "🍌", "grape": "🍇", "mango": "🥭", "watermelon": "🍉",
     "orange": "🍊", "pear": "🍐", "peach": "🍑", "strawberry": "🍓", "cherry": "🍒",
@@ -100,7 +53,14 @@ emoji_mapping = {
     "dessert": "🍰", "cake": "🎂", "cookie": "🍪", "ice cream": "🍦", "chocolate": "🍫"
 }
 
-# Store data with all stores
+# Function to fetch emoji
+def get_emoji(item_name):
+    for key in emoji_mapping:
+        if key in item_name.lower():
+            return emoji_mapping[key]
+    return "🍽️"
+
+# Store-specific data
 store_data = {
     "Ted's Fresh": {
         "template": "{sale_type} ⏰\n{emoji} {item_name} {price}.\nOnly {date_range}\n.\n.\n{hashtags}",
@@ -144,66 +104,52 @@ store_data = {
     }
 }
 
-def get_emoji(item_name):
-    """Get emoji for item name"""
-    for key in emoji_mapping:
-        if key in item_name.lower():
-            return emoji_mapping[key]
-    return "🍽️"
+# Streamlit App
+st.title("Enhanced Caption Generator")
 
-def format_price(price_str):
-    """Format price with proper currency symbol"""
-    try:
-        price = float(price_str)
-        if price.is_integer():
-            return f"{int(price)}c"  # Using 'c' instead of '¢'
-        return f"${price:.2f}"
-    except ValueError:
-        return "Invalid price"
+# Streamlit layout with styled container
+with st.container():
+    st.markdown("<div class='container'>", unsafe_allow_html=True)
 
-# App title
-st.title("✨ Enhanced Caption Generator")
-
-# Create two columns for the form
-col1, col2 = st.columns([1, 1])
-
-with col1:
-    st.markdown("##### Store & Item Details")
-    store = st.selectbox("Select Store", list(store_data.keys()))
-    item_name = st.text_input("Item Name")
-    price_format = st.radio("Price Format", ("x lb", "x ea"))
-
-with col2:
-    st.markdown("##### Price & Dates")
-    price = st.text_input(f"Enter price {price_format}")
-    start_date = st.date_input("Start Date", datetime.today())
-    end_date = st.date_input("End Date", datetime.today() + timedelta(days=6))
-    
-    if store in ["Ted's Fresh", "IFM Market"]:
-        sale_type = st.selectbox("Sale Type", ["3 Day Sale", "4 Day Sale"])
-    else:
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        store = st.selectbox("Store", list(store_data.keys()), key="store")
+        item_name = st.text_input("Item Name", key="item_name")
+        price_format = st.radio("Price Format", ("x lb", "x ea"), key="price_format")
+    with col2:
+        price = st.text_input(f"Enter price {price_format}", key="price")
+        start_date = st.date_input("Start Date", datetime.today(), key="start_date")
+        end_date = st.date_input("End Date", start_date + timedelta(days=6), key="end_date")
+        date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
         sale_type = ""
+        if store in ["Ted's Fresh", "IFM Market"]:
+            sale_type = st.selectbox("Sale Type", ["3 Day Sale", "4 Day Sale"], key="sale_type")
 
-# Generate caption
-if st.button("Generate Caption", use_container_width=True):
-    with st.container():
+    # Format price
+    if price:
+        try:
+            price = float(price)
+            if price.is_integer():
+                price = f"{int(price)}¢"
+            else:
+                price = f"${price:.2f}"
+        except ValueError:
+            price = "Invalid price entered"
+
+    # Generate caption
+    if st.button("Generate Caption"):
         store_info = store_data[store]
         emoji = get_emoji(item_name)
-        formatted_price = f"{format_price(price)} {price_format}" if price else "Price not entered"
-        date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
-        
+        formatted_price = f"{price} {price_format}" if price else "Price not entered"
         caption = store_info["template"].format(
             emoji=emoji,
             item_name=item_name,
             price=formatted_price,
             date_range=date_range,
-            location=store_info["location"],
+            location=store_info["location"] if store_info["location"] else "",
             hashtags=store_info["hashtags"],
             sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
         )
-        
         st.text_area("Generated Caption", value=caption, height=200)
-        
-        # Copy button
-        if st.button("📋 Copy to Clipboard"):
-            st.write("Caption copied to clipboard! (Note: This is a placeholder - Streamlit can't directly copy to clipboard)")
+
+    st.markdown("</div>", unsafe_allow_html=True)
