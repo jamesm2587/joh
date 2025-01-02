@@ -70,58 +70,66 @@ store_data = {
 # Streamlit App
 st.title("Enhanced Caption Generator")
 
-# Store Selection
-store = st.selectbox("Select Store", list(store_data.keys()))
+# Streamlit layout optimization
+# Create a container to organize everything into a smaller, more square format.
+with st.container():
+    # Organize inputs into two columns
+    col1, col2 = st.columns([2, 1])
 
-# Item Input
-item_name = st.text_input("Item Name")
+    with col1:
+        # Store Selection
+        store = st.selectbox("Store", list(store_data.keys()), key="store")
 
-# Price Format Selection (Radio buttons for per lb or per each)
-price_format = st.radio("Select Price Format", ("x lb", "x ea"))
+        # Item Input
+        item_name = st.text_input("Item Name", key="item_name")
 
-# Price Input (activates after choosing price format)
-price = None
-if price_format:
-    price = st.text_input(f"Enter price {price_format}")
+        # Price Format Selection (Radio buttons for per lb or per each)
+        price_format = st.radio("Price Format", ("x lb", "x ea"), key="price_format")
 
-# Automatically determine if the price is in dollars or cents
-if price:
-    try:
-        price = float(price)
-        if price.is_integer():
-            price = f"{int(price)}¢"  # Use the cent symbol (¢) if it's an integer
-        else:
-            price = f"${price:.2f}"  # Format as dollars if it's a decimal
-    except ValueError:
-        price = "Invalid price entered"
+    with col2:
+        # Price Input
+        price = None
+        if price_format:
+            price = st.text_input(f"Enter price {price_format}", key="price")
 
-# Date range picker
-st.write("Select Date Range")
-start_date = st.date_input("Start Date", datetime.today())
-end_date = st.date_input("End Date", start_date + timedelta(days=6))
-date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
+        # Date range picker
+        st.write("Select Date Range")
+        start_date = st.date_input("Start Date", datetime.today(), key="start_date")
+        end_date = st.date_input("End Date", start_date + timedelta(days=6), key="end_date")
+        date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
 
-# Sale type dropdown for specific stores
-sale_type = ""
-if store in ["Ted's Fresh", "IFM Market"]:
-    sale_type = st.selectbox("Select Sale Type", ["3 Day Sale", "4 Day Sale"])
+        # Sale type dropdown for specific stores
+        sale_type = ""
+        if store in ["Ted's Fresh", "IFM Market"]:
+            sale_type = st.selectbox("Sale Type", ["3 Day Sale", "4 Day Sale"], key="sale_type")
 
-# Generate caption
-if st.button("Generate Caption"):
-    store_info = store_data[store]
-    emoji = get_emoji(item_name)
+    # Automatically determine if the price is in dollars or cents
+    if price:
+        try:
+            price = float(price)
+            if price.is_integer():
+                price = f"{int(price)}¢"  # Use the cent symbol (¢) if it's an integer
+            else:
+                price = f"${price:.2f}"  # Format as dollars if it's a decimal
+        except ValueError:
+            price = "Invalid price entered"
 
-    # Ensure price format reflects correctly in the caption
-    formatted_price = f"{price} {price_format}" if price else "Price not entered"
+    # Generate caption
+    if st.button("Generate Caption"):
+        store_info = store_data[store]
+        emoji = get_emoji(item_name)
 
-    caption = store_info["template"].format(
-        emoji=emoji,
-        item_name=item_name,
-        price=formatted_price,
-        date_range=date_range,
-        location=store_info["location"] if store_info["location"] else "",
-        hashtags=store_info["hashtags"],
-        sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
-    )
+        # Ensure price format reflects correctly in the caption
+        formatted_price = f"{price} {price_format}" if price else "Price not entered"
 
-    st.text_area("Generated Caption", value=caption, height=200)
+        caption = store_info["template"].format(
+            emoji=emoji,
+            item_name=item_name,
+            price=formatted_price,
+            date_range=date_range,
+            location=store_info["location"] if store_info["location"] else "",
+            hashtags=store_info["hashtags"],
+            sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
+        )
+
+        st.text_area("Generated Caption", value=caption, height=200)
