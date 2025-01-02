@@ -26,11 +26,6 @@ st.markdown(
     background: linear-gradient(135deg, #6a11cb, #2575fc); /* Keep original background color on hover */
     color: white; /* Ensure text remains white */
 }
-
-.stButton>button:active {
-    background: linear-gradient(135deg, #6a11cb, #2575fc); /* Ensure background stays the same when clicked */
-    color: white; /* Keep text white */
-}
     .stTextArea textarea {
         background: rgba(255, 255, 255, 0.8);
         backdrop-filter: blur(10px);
