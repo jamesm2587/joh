@@ -1,7 +1,5 @@
 import streamlit as st
 from datetime import datetime, timedelta
-import emoji
-import re
 
 # Expanded emoji mapping
 emoji_mapping = {
@@ -38,6 +36,36 @@ store_data = {
         "location": "",
         "hashtags": "#Naperville #Fresh #Market #Produce #Meat #internationalfreshmarket",
     },
+    "Fiesta Market": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "9710 Main St. Lamont, Ca.",
+        "hashtags": "#fiestamarket #grocerydeals #weeklyspecials #freshproduce #meats",
+    },
+    "Viva": {
+        "template": "{emoji} {item_name} {price}.\n⏰ Deal from {date_range}\n🌟 Only at Viva Supermarket\n.\n.\n{hashtags}",
+        "location": "",
+        "hashtags": "#vivasupermarket #grocerydeals #groceryspecials #weeklysavings #weeklyspecials #grocery #abarrotes #carniceria #mariscos #seafood #produce #frutasyverduras #ahorros #ofertas",
+    },
+    "La Princesa Watsonville": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "123 Main St. Watsonville, Ca.",
+        "hashtags": "#laprincesa #watsonville #grocerydeals #weeklyspecials #freshproduce #meats",
+    },
+    "Sam's Food": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "456 Elm St. Fresno, Ca.",
+        "hashtags": "#samsfood #fresno #grocerydeals #weeklyspecials #freshproduce #meats",
+    },
+    "Puesto Market": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "789 Oak St. Bakersfield, Ca.",
+        "hashtags": "#puestomarket #bakersfield #grocerydeals #weeklyspecials #freshproduce #meats",
+    },
+    "Rranch": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "987 Pine St. Sacramento, Ca.",
+        "hashtags": "#rranch #sacramento #grocerydeals #weeklyspecials #freshproduce #meats",
+    }
 }
 
 # Streamlit App Layout
@@ -54,7 +82,7 @@ item_name = st.text_input("Item Name")
 suggested_emoji = get_suggested_emoji(item_name)
 st.write(f"Suggested Emoji: {suggested_emoji}")
 
-# Emoji Picker
+# Emoji Picker (Manual Entry)
 manual_emoji = st.text_input("Or choose an emoji manually", value=suggested_emoji)
 
 # Price Format and Input
@@ -63,11 +91,18 @@ price = None
 if price_format:
     price = st.text_input(f"Enter price {price_format}")
 
-# Date range picker
-st.write("Select Date Range")
-start_date = st.date_input("Start Date", datetime.today())
-end_date = st.date_input("End Date", start_date + timedelta(days=6))
-date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
+# Date range picker (Single Input)
+date_range = st.date_input(
+    "Select Date Range", 
+    value=(datetime.today(), datetime.today() + timedelta(days=6))
+)
+
+# Format the date range into MM/DD - MM/DD
+if isinstance(date_range, tuple) and len(date_range) == 2:
+    start_date, end_date = date_range
+    formatted_date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
+else:
+    formatted_date_range = "Invalid date range selected"
 
 # Sale type dropdown for specific stores
 sale_type = ""
@@ -84,7 +119,7 @@ if st.button("Generate Caption"):
         emoji=emoji_used,
         item_name=item_name,
         price=formatted_price,
-        date_range=date_range,
+        date_range=formatted_date_range,
         location=store_info["location"] if store_info["location"] else "",
         hashtags=store_info["hashtags"],
         sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
