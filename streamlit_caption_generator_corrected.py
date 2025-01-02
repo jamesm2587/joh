@@ -133,27 +133,27 @@ with st.container():
     with col1:
         # Item Name icon
         st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
-        st.image("https://img.icons8.com/ios-filled/50/808080/shopping-cart.png", class_="input-icon", use_container_width=False)
+        st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/shopping-cart.png" class="input-icon" />', unsafe_allow_html=True)
         store = st.selectbox("Store", list(store_data.keys()), key="store")
         item_name = st.text_input("Item Name", key="item_name")
         st.markdown('</div>', unsafe_allow_html=True)
         
         # Price icon
         st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
-        st.image("https://img.icons8.com/ios-filled/50/808080/price-tag.png", class_="input-icon", use_container_width=False)
+        st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/price-tag.png" class="input-icon" />', unsafe_allow_html=True)
         price_format = st.radio("Price Format", ("x lb", "x ea"), key="price_format")
         st.markdown('</div>', unsafe_allow_html=True)
         
     with col2:
         # Price input field
         st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
-        st.image("https://img.icons8.com/ios-filled/50/808080/price-tag.png", class_="input-icon", use_container_width=False)
+        st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/price-tag.png" class="input-icon" />', unsafe_allow_html=True)
         price = st.text_input(f"Enter price {price_format}", key="price")
         st.markdown('</div>', unsafe_allow_html=True)
 
         # Calendar icons for dates
         st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
-        st.image("https://img.icons8.com/ios-filled/50/808080/calendar.png", class_="input-icon", use_container_width=False)
+        st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/calendar.png" class="input-icon" />', unsafe_allow_html=True)
         start_date = st.date_input("Start Date", datetime.today(), key="start_date")
         end_date = st.date_input("End Date", start_date + timedelta(days=6), key="end_date")
         date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
@@ -163,7 +163,7 @@ with st.container():
         sale_type = ""
         if store in ["Ted's Fresh", "IFM Market"]:
             st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
-            st.image("https://img.icons8.com/ios-filled/50/808080/tag.png", class_="input-icon", use_container_width=False)
+            st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/tag.png" class="input-icon" />', unsafe_allow_html=True)
             sale_type = st.selectbox("Sale Type", ["3 Day Sale", "4 Day Sale"], key="sale_type")
             st.markdown('</div>', unsafe_allow_html=True)
 
