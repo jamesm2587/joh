@@ -1,155 +1,212 @@
-import streamlit as st
-from datetime import datetime, timedelta
+import React, { useState } from 'react';
+import { Calendar, Store, Type, DollarSign, Clock } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Select } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 
-# Custom CSS for gradients, shadows, and glass effects
-st.markdown(
-    """
-    <style>
-    body {
-        background: linear-gradient(135deg, #f3f4f7, #e4e7ed);
-        font-family: 'Arial', sans-serif;
+const emojiMapping = {
+  "apple": "🍎", "banana": "🍌", "grape": "🍇", "mango": "🥭", "watermelon": "🍉",
+  "orange": "🍊", "pear": "🍐", "peach": "🍑", "strawberry": "🍓", "cherry": "🍒",
+  "kiwi": "🥝", "pineapple": "🍍", "blueberry": "🫐", "avocado": "🥑",
+  "carrot": "🥕", "broccoli": "🥦", "corn": "🌽", "lettuce": "🥬", "tomato": "🍅",
+  "potato": "🥔", "onion": "🧅", "garlic": "🧄", "pepper": "🌶️", "cucumber": "🥒",
+  "mushroom": "🍄", "beef": "🥩", "chicken": "🍗", "pork": "🐖", "turkey": "🦃",
+  "lamb": "🐑", "fish": "🐟", "shrimp": "🍤", "crab": "🦀", "lobster": "🦞",
+  "salmon": "🐟", "tilapia": "🐟", "milk": "🥛", "cheese": "🧀", "butter": "🧈",
+  "egg": "🥚", "yogurt": "🥄", "bread": "🍞", "rice": "🍚", "pasta": "🍝",
+  "pizza": "🍕", "burger": "🍔", "taco": "🌮", "burrito": "🌯", "sushi": "🍣",
+  "dessert": "🍰", "cake": "🎂", "cookie": "🍪", "ice cream": "🍦", "chocolate": "🍫"
+};
+
+const storeData = {
+  "Ted's Fresh": {
+    template: "{sale_type} ⏰\n{emoji} {item_name} {price}.\nOnly {date_range}\n.\n.\n{hashtags}",
+    location: "",
+    hashtags: "#Meat #Produce #USDA #Halal #tedsfreshmarket #tedsmarket #grocerydeals #weeklydeals #freshproduce #halalmeats",
+  },
+  "IFM Market": {
+    template: "{sale_type} ⏰\n{emoji} {item_name} {price}.\nOnly {date_range}\n.\n.\n{hashtags}",
+    location: "",
+    hashtags: "#Naperville #Fresh #Market #Produce #Meat #internationalfreshmarket",
+  },
+  "Fiesta Market": {
+    template: "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+    location: "9710 Main St. Lamont, Ca.",
+    hashtags: "#fiestamarket #grocerydeals #weeklyspecials #freshproduce #meats",
+  },
+  // ... add other stores
+};
+
+const CaptionGenerator = () => {
+  const [formData, setFormData] = useState({
+    store: "Ted's Fresh",
+    itemName: "",
+    priceFormat: "x lb",
+    price: "",
+    startDate: new Date().toISOString().split('T')[0],
+    endDate: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    saleType: "3 Day Sale"
+  });
+  const [caption, setCaption] = useState("");
+
+  const getEmoji = (itemName) => {
+    for (const [key, value] of Object.entries(emojiMapping)) {
+      if (itemName.toLowerCase().includes(key)) {
+        return value;
+      }
     }
-    .stButton>button {
-        background: linear-gradient(135deg, #6a11cb, #2575fc);
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s ease;
-    }
-    .stButton>button:hover {
-        transform: scale(1.05);
-    }
-    .stTextArea textarea {
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(10px);
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    .container {
-        padding: 20px;
-        border-radius: 15px;
-        background: rgba(255, 255, 255, 0.9);
-        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+    return "🍽️";
+  };
 
-# Expanded emoji mapping
-emoji_mapping = {
-    "apple": "🍎", "banana": "🍌", "grape": "🍇", "mango": "🥭", "watermelon": "🍉",
-    "orange": "🍊", "pear": "🍐", "peach": "🍑", "strawberry": "🍓", "cherry": "🍒",
-    "kiwi": "🥝", "pineapple": "🍍", "blueberry": "🫐", "avocado": "🥑",
-    "carrot": "🥕", "broccoli": "🥦", "corn": "🌽", "lettuce": "🥬", "tomato": "🍅",
-    "potato": "🥔", "onion": "🧅", "garlic": "🧄", "pepper": "🌶️", "cucumber": "🥒",
-    "mushroom": "🍄", "beef": "🥩", "chicken": "🍗", "pork": "🐖", "turkey": "🦃",
-    "lamb": "🐑", "fish": "🐟", "shrimp": "🍤", "crab": "🦀", "lobster": "🦞",
-    "salmon": "🐟", "tilapia": "🐟", "milk": "🥛", "cheese": "🧀", "butter": "🧈",
-    "egg": "🥚", "yogurt": "🥄", "bread": "🍞", "rice": "🍚", "pasta": "🍝",
-    "pizza": "🍕", "burger": "🍔", "taco": "🌮", "burrito": "🌯", "sushi": "🍣",
-    "dessert": "🍰", "cake": "🎂", "cookie": "🍪", "ice cream": "🍦", "chocolate": "🍫"
-}
+  const formatPrice = (price) => {
+    const numPrice = parseFloat(price);
+    if (isNaN(numPrice)) return "Invalid price";
+    return Number.isInteger(numPrice) ? `${numPrice}¢` : `$${numPrice.toFixed(2)}`;
+  };
 
-# Function to fetch emoji
-def get_emoji(item_name):
-    for key in emoji_mapping:
-        if key in item_name.lower():
-            return emoji_mapping[key]
-    return "🍽️"
+  const generateCaption = () => {
+    const store = storeData[formData.store];
+    const emoji = getEmoji(formData.itemName);
+    const formattedPrice = `${formatPrice(formData.price)} ${formData.priceFormat}`;
+    const dateRange = `${new Date(formData.startDate).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' })} - ${new Date(formData.endDate).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' })}`;
 
-# Store-specific data
-store_data = {
-    "Ted's Fresh": {
-        "template": "{sale_type} ⏰\n{emoji} {item_name} {price}.\nOnly {date_range}\n.\n.\n{hashtags}",
-        "location": "",
-        "hashtags": "#Meat #Produce #USDA #Halal #tedsfreshmarket #tedsmarket #grocerydeals #weeklydeals #freshproduce #halalmeats",
-    },
-    "IFM Market": {
-        "template": "{sale_type} ⏰\n{emoji} {item_name} {price}.\nOnly {date_range}\n.\n.\n{hashtags}",
-        "location": "",
-        "hashtags": "#Naperville #Fresh #Market #Produce #Meat #internationalfreshmarket",
-    },
-    "Fiesta Market": {
-        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
-        "location": "9710 Main St. Lamont, Ca.",
-        "hashtags": "#fiestamarket #grocerydeals #weeklyspecials #freshproduce #meats",
-    },
-    "Viva": {
-        "template": "{emoji} {item_name} {price}.\n⏰ Deal from {date_range}\n🌟 Only at Viva Supermarket\n.\n.\n{hashtags}",
-        "location": "",
-        "hashtags": "#vivasupermarket #grocerydeals #groceryspecials #weeklysavings #weeklyspecials #grocery #abarrotes #carniceria #mariscos #seafood #produce #frutasyverduras #ahorros #ofertas",
-    },
-    "La Princesa Watsonville": {
-        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
-        "location": "123 Main St. Watsonville, Ca.",
-        "hashtags": "#laprincesa #watsonville #grocerydeals #weeklyspecials #freshproduce #meats",
-    },
-    "Sam's Food": {
-        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
-        "location": "456 Elm St. Fresno, Ca.",
-        "hashtags": "#samsfood #fresno #grocerydeals #weeklyspecials #freshproduce #meats",
-    },
-    "Puesto Market": {
-        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
-        "location": "789 Oak St. Bakersfield, Ca.",
-        "hashtags": "#puestomarket #bakersfield #grocerydeals #weeklyspecials #freshproduce #meats",
-    },
-    "Rranch": {
-        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
-        "location": "987 Pine St. Sacramento, Ca.",
-        "hashtags": "#rranch #sacramento #grocerydeals #weeklyspecials #freshproduce #meats",
-    }
-}
+    const caption = store.template
+      .replace("{emoji}", emoji)
+      .replace("{item_name}", formData.itemName)
+      .replace("{price}", formattedPrice)
+      .replace("{date_range}", dateRange)
+      .replace("{location}", store.location)
+      .replace("{hashtags}", store.hashtags)
+      .replace("{sale_type}", formData.saleType);
 
-# Streamlit App
-st.title("Enhanced Caption Generator")
+    setCaption(caption);
+  };
 
-# Streamlit layout with styled container
-with st.container():
-    st.markdown("<div class='container'>", unsafe_allow_html=True)
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+      <Card className="max-w-4xl mx-auto bg-white/80 backdrop-blur-lg shadow-xl">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-center text-gray-800">
+            Enhanced Caption Generator
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <Store className="w-5 h-5 text-gray-500" />
+                <select
+                  className="w-full p-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  value={formData.store}
+                  onChange={(e) => setFormData({ ...formData, store: e.target.value })}
+                >
+                  {Object.keys(storeData).map(store => (
+                    <option key={store} value={store}>{store}</option>
+                  ))}
+                </select>
+              </div>
 
-    col1, col2 = st.columns([2, 1])
-    with col1:
-        store = st.selectbox("Store", list(store_data.keys()), key="store")
-        item_name = st.text_input("Item Name", key="item_name")
-        price_format = st.radio("Price Format", ("x lb", "x ea"), key="price_format")
-    with col2:
-        price = st.text_input(f"Enter price {price_format}", key="price")
-        start_date = st.date_input("Start Date", datetime.today(), key="start_date")
-        end_date = st.date_input("End Date", start_date + timedelta(days=6), key="end_date")
-        date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
-        sale_type = ""
-        if store in ["Ted's Fresh", "IFM Market"]:
-            sale_type = st.selectbox("Sale Type", ["3 Day Sale", "4 Day Sale"], key="sale_type")
+              <div className="flex items-center space-x-2">
+                <Type className="w-5 h-5 text-gray-500" />
+                <Input
+                  placeholder="Item Name"
+                  value={formData.itemName}
+                  onChange={(e) => setFormData({ ...formData, itemName: e.target.value })}
+                  className="w-full"
+                />
+              </div>
 
-    # Format price
-    if price:
-        try:
-            price = float(price)
-            if price.is_integer():
-                price = f"{int(price)}¢"
-            else:
-                price = f"${price:.2f}"
-        except ValueError:
-            price = "Invalid price entered"
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Price Format</Label>
+                <RadioGroup
+                  value={formData.priceFormat}
+                  onValueChange={(value) => setFormData({ ...formData, priceFormat: value })}
+                  className="flex space-x-4"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="x lb" id="x-lb" />
+                    <Label htmlFor="x-lb">x lb</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="x ea" id="x-ea" />
+                    <Label htmlFor="x-ea">x ea</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+            </div>
 
-    # Generate caption
-    if st.button("Generate Caption"):
-        store_info = store_data[store]
-        emoji = get_emoji(item_name)
-        formatted_price = f"{price} {price_format}" if price else "Price not entered"
-        caption = store_info["template"].format(
-            emoji=emoji,
-            item_name=item_name,
-            price=formatted_price,
-            date_range=date_range,
-            location=store_info["location"] if store_info["location"] else "",
-            hashtags=store_info["hashtags"],
-            sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
-        )
-        st.text_area("Generated Caption", value=caption, height=200)
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <DollarSign className="w-5 h-5 text-gray-500" />
+                <Input
+                  placeholder={`Price ${formData.priceFormat}`}
+                  value={formData.price}
+                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                  type="number"
+                  step="0.01"
+                  className="w-full"
+                />
+              </div>
 
-    st.markdown("</div>", unsafe_allow_html=True)
+              <div className="flex items-center space-x-2">
+                <Calendar className="w-5 h-5 text-gray-500" />
+                <Input
+                  type="date"
+                  value={formData.startDate}
+                  onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                  className="w-full"
+                />
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Clock className="w-5 h-5 text-gray-500" />
+                <Input
+                  type="date"
+                  value={formData.endDate}
+                  onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                  className="w-full"
+                />
+              </div>
+
+              {(formData.store === "Ted's Fresh" || formData.store === "IFM Market") && (
+                <select
+                  className="w-full p-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  value={formData.saleType}
+                  onChange={(e) => setFormData({ ...formData, saleType: e.target.value })}
+                >
+                  <option value="3 Day Sale">3 Day Sale</option>
+                  <option value="4 Day Sale">4 Day Sale</option>
+                </select>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <Button 
+              onClick={generateCaption}
+              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-2 px-4 rounded-md transition-all duration-200 transform hover:scale-105"
+            >
+              Generate Caption
+            </Button>
+          </div>
+
+          {caption && (
+            <div className="mt-6">
+              <Textarea
+                value={caption}
+                readOnly
+                className="w-full h-48 p-4 bg-gray-50 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+export default CaptionGenerator;
