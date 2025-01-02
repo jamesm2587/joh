@@ -26,42 +26,42 @@ def get_emoji(item_name):
 # Store-specific data
 store_data = {
     "Ted's Fresh": {
-        "template": "{sale_type} ⏰\n{emoji} {item_name} {price} x lb.\nOnly {date_range}\n.\n.\n{hashtags}",
+        "template": "{sale_type} ⏰\n{emoji} {item_name} {price}.\nOnly {date_range}\n.\n.\n{hashtags}",
         "location": "",
         "hashtags": "#Meat #Produce #USDA #Halal #tedsfreshmarket #tedsmarket #grocerydeals #weeklydeals #freshproduce #halalmeats",
     },
     "IFM Market": {
-        "template": "{sale_type} ⏰\n{emoji} {item_name} {price} x lb.\nOnly {date_range}\n.\n.\n{hashtags}",
+        "template": "{sale_type} ⏰\n{emoji} {item_name} {price}.\nOnly {date_range}\n.\n.\n{hashtags}",
         "location": "",
         "hashtags": "#Naperville #Fresh #Market #Produce #Meat #internationalfreshmarket",
     },
     "Fiesta Market": {
-        "template": "{emoji} {item_name} {price} x lb.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
         "location": "9710 Main St. Lamont, Ca.",
         "hashtags": "#fiestamarket #grocerydeals #weeklyspecials #freshproduce #meats",
     },
     "Viva": {
-        "template": "{emoji} {item_name} {price} x lb.\n⏰ Deal from {date_range}\n🌟 Only at Viva Supermarket\n.\n.\n{hashtags}",
+        "template": "{emoji} {item_name} {price}.\n⏰ Deal from {date_range}\n🌟 Only at Viva Supermarket\n.\n.\n{hashtags}",
         "location": "",
         "hashtags": "#vivasupermarket #grocerydeals #groceryspecials #weeklysavings #weeklyspecials #grocery #abarrotes #carniceria #mariscos #seafood #produce #frutasyverduras #ahorros #ofertas",
     },
     "La Princesa Watsonville": {
-        "template": "{emoji} {item_name} {price} x lb.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
         "location": "123 Main St. Watsonville, Ca.",
         "hashtags": "#laprincesa #watsonville #grocerydeals #weeklyspecials #freshproduce #meats",
     },
     "Sam's Food": {
-        "template": "{emoji} {item_name} {price} x lb.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
         "location": "456 Elm St. Fresno, Ca.",
         "hashtags": "#samsfood #fresno #grocerydeals #weeklyspecials #freshproduce #meats",
     },
     "Puesto Market": {
-        "template": "{emoji} {item_name} {price} x lb.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
         "location": "789 Oak St. Bakersfield, Ca.",
         "hashtags": "#puestomarket #bakersfield #grocerydeals #weeklyspecials #freshproduce #meats",
     },
     "Rranch": {
-        "template": "{emoji} {item_name} {price} x lb.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
         "location": "987 Pine St. Sacramento, Ca.",
         "hashtags": "#rranch #sacramento #grocerydeals #weeklyspecials #freshproduce #meats",
     }
@@ -77,12 +77,12 @@ store = st.selectbox("Select Store", list(store_data.keys()))
 item_name = st.text_input("Item Name")
 
 # Price Format Selection (Radio buttons for per lb or per each)
-price_format = st.radio("Select Price Format", ("Per lb", "Each"))
+price_format = st.radio("Select Price Format", ("x lb", "x ea"))
 
 # Price Input (activates after choosing price format)
 price = None
 if price_format:
-    price = st.text_input(f"Enter price per {price_format.lower()}")
+    price = st.text_input(f"Enter price {price_format}")
 
 # Date range picker
 st.write("Select Date Range")
@@ -101,7 +101,7 @@ if st.button("Generate Caption"):
     emoji = get_emoji(item_name)
 
     # Ensure price format reflects correctly in the caption
-    formatted_price = f"{price} {price_format.lower()}" if price else "Price not entered"
+    formatted_price = f"${price} {price_format}" if price else "Price not entered"
 
     caption = store_info["template"].format(
         emoji=emoji,
