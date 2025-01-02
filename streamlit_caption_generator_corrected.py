@@ -1,27 +1,49 @@
 import streamlit as st
 from datetime import datetime, timedelta
+import re
+from langdetect import detect
 
-# Expanded emoji mapping
+# Expanded emoji mapping for both English and Spanish
 emoji_mapping = {
-    "apple": "🍎", "banana": "🍌", "grape": "🍇", "mango": "🥭", "watermelon": "🍉",
-    "orange": "🍊", "pear": "🍐", "peach": "🍑", "strawberry": "🍓", "cherry": "🍒",
-    "kiwi": "🥝", "pineapple": "🍍", "blueberry": "🫐", "avocado": "🥑",
-    "carrot": "🥕", "broccoli": "🥦", "corn": "🌽", "lettuce": "🥬", "tomato": "🍅",
-    "potato": "🥔", "onion": "🧅", "garlic": "🧄", "pepper": "🌶️", "cucumber": "🥒",
-    "mushroom": "🍄", "beef": "🥩", "chicken": "🍗", "pork": "🐖", "turkey": "🦃",
-    "lamb": "🐑", "fish": "🐟", "shrimp": "🍤", "crab": "🦀", "lobster": "🦞",
-    "salmon": "🐟", "tilapia": "🐟", "milk": "🥛", "cheese": "🧀", "butter": "🧈",
-    "egg": "🥚", "yogurt": "🥄", "bread": "🍞", "rice": "🍚", "pasta": "🍝",
-    "pizza": "🍕", "burger": "🍔", "taco": "🌮", "burrito": "🌯", "sushi": "🍣",
-    "dessert": "🍰", "cake": "🎂", "cookie": "🍪", "ice cream": "🍦", "chocolate": "🍫"
-}
+    # Fruits
+    "apple": "🍎", "manzana": "🍎", "red apple": "🍎", "green apple": "🍏", 
+    "banana": "🍌", "plátano": "🍌", "mango": "🥭", "mangoes": "🥭", 
+    "watermelon": "🍉", "sandía": "🍉", "orange": "🍊", "naranja": "🍊", 
+    "pear": "🍐", "pera": "🍐", "peach": "🍑", "durazno": "🍑", 
+    "strawberry": "🍓", "fresa": "🍓", "cherry": "🍒", "cereza": "🍒", 
+    "kiwi": "🥝", "kiwis": "🥝", "pineapple": "🍍", "piña": "🍍", 
+    "blueberry": "🫐", "arándano": "🫐", "avocado": "🥑", "aguacate": "🥑", 
 
-# Function to fetch emoji
-def get_emoji(item_name):
-    for key in emoji_mapping:
-        if key in item_name.lower():
-            return emoji_mapping[key]
-    return "🍽️"  # Default emoji
+    # Vegetables
+    "carrot": "🥕", "zanahoria": "🥕", "broccoli": "🥦", "brócoli": "🥦", 
+    "corn": "🌽", "maíz": "🌽", "lettuce": "🥬", "lechuga": "🥬", 
+    "tomato": "🍅", "jitomate": "🍅", "potato": "🥔", "papa": "🥔", 
+    "onion": "🧅", "cebolla": "🧅", "garlic": "🧄", "ajo": "🧄", 
+
+    # Meats
+    "beef": "🥩", "carne de res": "🥩", "chicken": "🍗", "pollo": "🍗", 
+    "pork": "🐖", "cerdo": "🐖", "turkey": "🦃", "pavo": "🦃", 
+    "lamb": "🐑", "cordero": "🐑", "fish": "🐟", "pescado": "🐟", 
+    "shrimp": "🍤", "camarón": "🍤", "crab": "🦀", "cangrejo": "🦀", 
+    "lobster": "🦞", "langosta": "🦞", "salmon": "🐟", "salmón": "🐟", 
+    "tilapia": "🐟", "tilapia": "🐟", 
+
+    # Dairy
+    "milk": "🥛", "leche": "🥛", "cheese": "🧀", "queso": "🧀", 
+    "butter": "🧈", "mantequilla": "🧈", "egg": "🥚", "huevo": "🥚", 
+    "yogurt": "🥄", "yogur": "🥄", 
+
+    # Bakery
+    "bread": "🍞", "pan": "🍞", "rice": "🍚", "arroz": "🍚", 
+    "pasta": "🍝", "espaguetis": "🍝", "pizza": "🍕", "pizza": "🍕", 
+    "burger": "🍔", "hamburguesa": "🍔", "taco": "🌮", "burrito": "🌯", 
+    "sushi": "🍣", "sushi": "🍣", 
+
+    # Sweets
+    "dessert": "🍰", "pastel": "🍰", "cake": "🎂", "torta": "🎂", 
+    "cookie": "🍪", "galleta": "🍪", "ice cream": "🍦", "helado": "🍦", 
+    "chocolate": "🍫", "chocolate": "🍫",
+}
 
 # Store-specific data
 store_data = {
@@ -67,69 +89,75 @@ store_data = {
     }
 }
 
+# Detect language (English or Spanish)
+def detect_language(text):
+    try:
+        return detect(text)  # Detects the language
+    except:
+        return "en"  # Default to English if detection fails
+
+# Function to fetch emoji with language detection and regex matching
+def get_emoji(item_name):
+    language = detect_language(item_name)  # Detect language ('en' or 'es')
+    item_name = item_name.lower()
+
+    if language == "es":
+        # Match against Spanish terms in the emoji_mapping
+        for key in emoji_mapping:
+            if re.search(r'\b' + re.escape(key) + r'\b', item_name):  # Word boundary for exact match
+                return emoji_mapping[key]
+    else:
+        # Match against English terms
+        for key in emoji_mapping:
+            if re.search(r'\b' + re.escape(key) + r'\b', item_name):  # Word boundary for exact match
+                return emoji_mapping[key]
+    
+    return "🍽️"  # Default emoji
+
 # Streamlit App
 st.title("Enhanced Caption Generator")
 
-# Streamlit layout optimization
-# Create a container to organize everything into a smaller, more square format.
-with st.container():
-    # Organize inputs into two columns
-    col1, col2 = st.columns([2, 1])
+# Store Selection
+store = st.selectbox("Select Store", list(store_data.keys()))
 
-    with col1:
-        # Store Selection
-        store = st.selectbox("Store", list(store_data.keys()), key="store")
+# Item Input
+item_name = st.text_input("Item Name")
 
-        # Item Input
-        item_name = st.text_input("Item Name", key="item_name")
+# Price Format Selection (Radio buttons for per lb or per each)
+price_format = st.radio("Select Price Format", ("x lb", "x ea"))
 
-        # Price Format Selection (Radio buttons for per lb or per each)
-        price_format = st.radio("Price Format", ("x lb", "x ea"), key="price_format")
+# Price Input (activates after choosing price format)
+price = None
+if price_format:
+    price = st.text_input(f"Enter price {price_format}")
 
-    with col2:
-        # Price Input
-        price = None
-        if price_format:
-            price = st.text_input(f"Enter price {price_format}", key="price")
+# Date range picker
+st.write("Select Date Range")
+start_date = st.date_input("Start Date", datetime.today())
+end_date = st.date_input("End Date", start_date + timedelta(days=6))
+date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
 
-        # Date range picker
-        st.write("Select Date Range")
-        start_date = st.date_input("Start Date", datetime.today(), key="start_date")
-        end_date = st.date_input("End Date", start_date + timedelta(days=6), key="end_date")
-        date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
+# Sale type dropdown for specific stores
+sale_type = ""
+if store in ["Ted's Fresh", "IFM Market"]:
+    sale_type = st.selectbox("Select Sale Type", ["3 Day Sale", "4 Day Sale"])
 
-        # Sale type dropdown for specific stores
-        sale_type = ""
-        if store in ["Ted's Fresh", "IFM Market"]:
-            sale_type = st.selectbox("Sale Type", ["3 Day Sale", "4 Day Sale"], key="sale_type")
+# Generate caption
+if st.button("Generate Caption"):
+    store_info = store_data[store]
+    emoji = get_emoji(item_name)  # Get emoji based on item name
 
-    # Automatically determine if the price is in dollars or cents
-    if price:
-        try:
-            price = float(price)
-            if price.is_integer():
-                price = f"{int(price)}¢"  # Use the cent symbol (¢) if it's an integer
-            else:
-                price = f"${price:.2f}"  # Format as dollars if it's a decimal
-        except ValueError:
-            price = "Invalid price entered"
+    # Ensure price format reflects correctly in the caption
+    formatted_price = f"${price} {price_format}" if price else "Price not entered"
 
-    # Generate caption
-    if st.button("Generate Caption"):
-        store_info = store_data[store]
-        emoji = get_emoji(item_name)
+    caption = store_info["template"].format(
+        emoji=emoji,
+        item_name=item_name,
+        price=formatted_price,
+        date_range=date_range,
+        location=store_info["location"] if store_info["location"] else "",
+        hashtags=store_info["hashtags"],
+        sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
+    )
 
-        # Ensure price format reflects correctly in the caption
-        formatted_price = f"{price} {price_format}" if price else "Price not entered"
-
-        caption = store_info["template"].format(
-            emoji=emoji,
-            item_name=item_name,
-            price=formatted_price,
-            date_range=date_range,
-            location=store_info["location"] if store_info["location"] else "",
-            hashtags=store_info["hashtags"],
-            sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
-        )
-
-        st.text_area("Generated Caption", value=caption, height=200)
+    st.text_area("Generated Caption", value=caption, height=200)
