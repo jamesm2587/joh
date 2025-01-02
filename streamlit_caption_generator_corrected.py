@@ -1,6 +1,5 @@
 import streamlit as st
 from datetime import datetime, timedelta
-import re
 
 # Expanded emoji mapping
 emoji_mapping = {
@@ -18,12 +17,23 @@ emoji_mapping = {
 }
 
 # Function to fetch emoji based on item name
-def get_suggested_emoji(item_name):
-    item_name_lower = item_name.lower()
-    for key, emoji in emoji_mapping.items():
-        if key in item_name_lower:
-            return emoji
+def get_emoji(item_name):
+    for key in emoji_mapping:
+        if key in item_name.lower():
+            return emoji_mapping[key]
     return "🍽️"  # Default emoji
+
+# Simple Language Detection (based on keywords)
+def detect_language(text):
+    spanish_keywords = ["el", "la", "de", "y", "es", "en", "para", "un", "una", "con"]
+    english_keywords = ["the", "and", "is", "in", "for", "a", "with"]
+    
+    # Check for Spanish or English keywords
+    if any(keyword in text.lower() for keyword in spanish_keywords):
+        return "spanish"
+    elif any(keyword in text.lower() for keyword in english_keywords):
+        return "english"
+    return "english"  # Default to English if no keywords match
 
 # Store-specific data
 store_data = {
@@ -69,58 +79,19 @@ store_data = {
     }
 }
 
-# Streamlit App Layout
-st.set_page_config(page_title="Enhanced Caption Generator", layout="wide")
+# Streamlit App
+st.title("Enhanced Caption Generator")
 
-# Custom CSS Styling
-st.markdown("""
-    <style>
-    .main {
-        background-color: #f4f4f4;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-    .header {
-        font-size: 2em;
-        color: #4CAF50;
-        text-align: center;
-    }
-    .stTextInput, .stRadio, .stSelectbox {
-        margin-top: 10px;
-        margin-bottom: 15px;
-    }
-    .stButton {
-        background-color: #4CAF50;
-        color: white;
-        border-radius: 8px;
-        padding: 10px 20px;
-    }
-    .stButton:hover {
-        background-color: #45a049;
-    }
-    .stTextArea {
-        background-color: #ffffff;
-        border-radius: 8px;
-        padding: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-# Title and store selection
-st.markdown('<div class="header">Enhanced Caption Generator</div>', unsafe_allow_html=True)
+# Store Selection
 store = st.selectbox("Select Store", list(store_data.keys()))
 
 # Item Input
 item_name = st.text_input("Item Name")
 
-# Suggested Emoji Display
-suggested_emoji = get_suggested_emoji(item_name)
-st.write(f"Suggested Emoji: {suggested_emoji}")
-
-# Price Format and Input
+# Price Format Selection (Radio buttons for per lb or per each)
 price_format = st.radio("Select Price Format", ("x lb", "x ea"))
+
+# Price Input (activates after choosing price format)
 price = None
 if price_format:
     price = st.text_input(f"Enter price {price_format}")
@@ -136,24 +107,20 @@ sale_type = ""
 if store in ["Ted's Fresh", "IFM Market"]:
     sale_type = st.selectbox("Select Sale Type", ["3 Day Sale", "4 Day Sale"])
 
-# Caption Templates
-template_choice = st.selectbox("Select Caption Template", ["Default", "Short", "Detailed"])
-
-# Generate caption button
+# Generate caption
 if st.button("Generate Caption"):
     store_info = store_data[store]
-    emoji = suggested_emoji
+    emoji = get_emoji(item_name)
+    
+    # Detect language for emoji mapping
+    language = detect_language(item_name)
+    if language == "spanish":
+        emoji = "🇲🇽"  # Adjust this based on Spanish preference if needed
+    
+    # Ensure price format reflects correctly in the caption
     formatted_price = f"${price} {price_format}" if price else "Price not entered"
 
-    # Adjust the template
-    if template_choice == "Short":
-        template = "{emoji} {item_name} {price}.\n⏰ {date_range}\n{hashtags}"
-    elif template_choice == "Detailed":
-        template = store_info["template"]
-    else:
-        template = store_info["template"]
-
-    caption = template.format(
+    caption = store_info["template"].format(
         emoji=emoji,
         item_name=item_name,
         price=formatted_price,
@@ -163,9 +130,4 @@ if st.button("Generate Caption"):
         sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
     )
 
-    # Display the generated caption
     st.text_area("Generated Caption", value=caption, height=200)
-
-    # Real-time Caption Preview
-    st.subheader("Live Preview of Your Caption:")
-    st.write(caption)
