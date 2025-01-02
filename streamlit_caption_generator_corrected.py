@@ -29,13 +29,6 @@ st.markdown(
         border-radius: 10px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-    .container {
-        padding: 20px;
-        border-radius: 15px;
-        background: rgba(255, 255, 255, 0.9);
-        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
-        margin-top: 0px; /* Ensures no unwanted spacing at the top */
-    }
     .input-icon {
         width: 20px;
         height: 20px;
