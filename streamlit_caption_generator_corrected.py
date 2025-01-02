@@ -80,32 +80,39 @@ store_data = {
 }
 
 # Streamlit App
+st.set_page_config(page_title="Enhanced Caption Generator", layout="wide")
+
 st.title("Enhanced Caption Generator")
 
-# Store Selection
-store = st.selectbox("Select Store", list(store_data.keys()))
+# Layout: Use columns to condense the layout
+col1, col2 = st.columns([1, 2])
 
-# Item Input
-item_name = st.text_input("Item Name")
+with col1:
+    # Store Selection
+    store = st.selectbox("Select Store", list(store_data.keys()))
 
-# Price Format Selection (Radio buttons for per lb or per each)
-price_format = st.radio("Select Price Format", ("x lb", "x ea"))
+    # Item Input
+    item_name = st.text_input("Item Name")
 
-# Price Input (activates after choosing price format)
-price = None
-if price_format:
-    price = st.text_input(f"Enter price {price_format}")
+    # Price Format Selection (Radio buttons for per lb or per each)
+    price_format = st.radio("Select Price Format", ("x lb", "x ea"))
 
-# Date range picker
-st.write("Select Date Range")
-start_date = st.date_input("Start Date", datetime.today())
-end_date = st.date_input("End Date", start_date + timedelta(days=6))
-date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
+with col2:
+    # Price Input (activates after choosing price format)
+    price = None
+    if price_format:
+        price = st.text_input(f"Enter price {price_format}")
 
-# Sale type dropdown for specific stores
-sale_type = ""
-if store in ["Ted's Fresh", "IFM Market"]:
-    sale_type = st.selectbox("Select Sale Type", ["3 Day Sale", "4 Day Sale"])
+    # Date range picker
+    st.write("Select Date Range")
+    start_date = st.date_input("Start Date", datetime.today())
+    end_date = st.date_input("End Date", start_date + timedelta(days=6))
+    date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
+
+    # Sale type dropdown for specific stores
+    sale_type = ""
+    if store in ["Ted's Fresh", "IFM Market"]:
+        sale_type = st.selectbox("Select Sale Type", ["3 Day Sale", "4 Day Sale"])
 
 # Generate caption
 if st.button("Generate Caption"):
