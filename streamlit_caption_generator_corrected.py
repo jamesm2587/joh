@@ -1,5 +1,6 @@
 import streamlit as st
 from datetime import datetime, timedelta
+import re
 
 # Expanded emoji mapping
 emoji_mapping = {
@@ -36,24 +37,87 @@ store_data = {
         "location": "",
         "hashtags": "#Naperville #Fresh #Market #Produce #Meat #internationalfreshmarket",
     },
+    "Fiesta Market": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "9710 Main St. Lamont, Ca.",
+        "hashtags": "#fiestamarket #grocerydeals #weeklyspecials #freshproduce #meats",
+    },
+    "Viva": {
+        "template": "{emoji} {item_name} {price}.\n⏰ Deal from {date_range}\n🌟 Only at Viva Supermarket\n.\n.\n{hashtags}",
+        "location": "",
+        "hashtags": "#vivasupermarket #grocerydeals #groceryspecials #weeklysavings #weeklyspecials #grocery #abarrotes #carniceria #mariscos #seafood #produce #frutasyverduras #ahorros #ofertas",
+    },
+    "La Princesa Watsonville": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "123 Main St. Watsonville, Ca.",
+        "hashtags": "#laprincesa #watsonville #grocerydeals #weeklyspecials #freshproduce #meats",
+    },
+    "Sam's Food": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "456 Elm St. Fresno, Ca.",
+        "hashtags": "#samsfood #fresno #grocerydeals #weeklyspecials #freshproduce #meats",
+    },
+    "Puesto Market": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "789 Oak St. Bakersfield, Ca.",
+        "hashtags": "#puestomarket #bakersfield #grocerydeals #weeklyspecials #freshproduce #meats",
+    },
+    "Rranch": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "987 Pine St. Sacramento, Ca.",
+        "hashtags": "#rranch #sacramento #grocerydeals #weeklyspecials #freshproduce #meats",
+    }
 }
 
 # Streamlit App Layout
 st.set_page_config(page_title="Enhanced Caption Generator", layout="wide")
 
+# Custom CSS Styling
+st.markdown("""
+    <style>
+    .main {
+        background-color: #f4f4f4;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+        font-size: 2em;
+        color: #4CAF50;
+        text-align: center;
+    }
+    .stTextInput, .stRadio, .stSelectbox {
+        margin-top: 10px;
+        margin-bottom: 15px;
+    }
+    .stButton {
+        background-color: #4CAF50;
+        color: white;
+        border-radius: 8px;
+        padding: 10px 20px;
+    }
+    .stButton:hover {
+        background-color: #45a049;
+    }
+    .stTextArea {
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # Title and store selection
-st.title("Enhanced Caption Generator")
+st.markdown('<div class="header">Enhanced Caption Generator</div>', unsafe_allow_html=True)
 store = st.selectbox("Select Store", list(store_data.keys()))
 
 # Item Input
 item_name = st.text_input("Item Name")
 
-# Suggested Emoji
+# Suggested Emoji Display
 suggested_emoji = get_suggested_emoji(item_name)
 st.write(f"Suggested Emoji: {suggested_emoji}")
-
-# Emoji Picker (Manual Entry)
-manual_emoji = st.text_input("Or choose an emoji manually", value=suggested_emoji)
 
 # Price Format and Input
 price_format = st.radio("Select Price Format", ("x lb", "x ea"))
@@ -61,38 +125,47 @@ price = None
 if price_format:
     price = st.text_input(f"Enter price {price_format}")
 
-# Date range picker (Single Input)
-date_range = st.date_input(
-    "Select Date Range", 
-    value=(datetime.today(), datetime.today() + timedelta(days=6))
-)
-
-# Format the date range into MM/DD - MM/DD
-if isinstance(date_range, tuple) and len(date_range) == 2:
-    start_date, end_date = date_range
-    formatted_date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
-else:
-    formatted_date_range = "Invalid date range selected"
+# Date range picker
+st.write("Select Date Range")
+start_date = st.date_input("Start Date", datetime.today())
+end_date = st.date_input("End Date", start_date + timedelta(days=6))
+date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
 
 # Sale type dropdown for specific stores
 sale_type = ""
 if store in ["Ted's Fresh", "IFM Market"]:
     sale_type = st.selectbox("Select Sale Type", ["3 Day Sale", "4 Day Sale"])
 
+# Caption Templates
+template_choice = st.selectbox("Select Caption Template", ["Default", "Short", "Detailed"])
+
 # Generate caption button
 if st.button("Generate Caption"):
     store_info = store_data[store]
-    emoji_used = manual_emoji or suggested_emoji
+    emoji = suggested_emoji
     formatted_price = f"${price} {price_format}" if price else "Price not entered"
 
-    caption = store_info["template"].format(
-        emoji=emoji_used,
+    # Adjust the template
+    if template_choice == "Short":
+        template = "{emoji} {item_name} {price}.\n⏰ {date_range}\n{hashtags}"
+    elif template_choice == "Detailed":
+        template = store_info["template"]
+    else:
+        template = store_info["template"]
+
+    caption = template.format(
+        emoji=emoji,
         item_name=item_name,
         price=formatted_price,
-        date_range=formatted_date_range,
+        date_range=date_range,
         location=store_info["location"] if store_info["location"] else "",
         hashtags=store_info["hashtags"],
         sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
     )
 
+    # Display the generated caption
     st.text_area("Generated Caption", value=caption, height=200)
+
+    # Real-time Caption Preview
+    st.subheader("Live Preview of Your Caption:")
+    st.write(caption)
