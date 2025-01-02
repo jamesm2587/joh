@@ -84,6 +84,17 @@ price = None
 if price_format:
     price = st.text_input(f"Enter price {price_format}")
 
+# Automatically determine if the price is in dollars or cents
+if price:
+    try:
+        price = float(price)
+        if price.is_integer():
+            price = f"{int(price)} cents"  # Treat as cents if it's an integer
+        else:
+            price = f"${price:.2f}"  # Format as dollars if it's a decimal
+    except ValueError:
+        price = "Invalid price entered"
+
 # Date range picker
 st.write("Select Date Range")
 start_date = st.date_input("Start Date", datetime.today())
@@ -101,7 +112,7 @@ if st.button("Generate Caption"):
     emoji = get_emoji(item_name)
 
     # Ensure price format reflects correctly in the caption
-    formatted_price = f"${price} {price_format}" if price else "Price not entered"
+    formatted_price = f"{price} {price_format}" if price else "Price not entered"
 
     caption = store_info["template"].format(
         emoji=emoji,
