@@ -97,6 +97,9 @@ with st.container():
             "Date Range",
             value=(datetime.today(), datetime.today() + timedelta(days=6)),
             key="date_range",
+            min_value=datetime.today(),
+            max_value=datetime.today() + timedelta(days=30),
+            help="Select the start and end date for the offer."
         )
 
         start_date = date_range[0].strftime('%m/%d')
