@@ -113,31 +113,35 @@ st.title("Enhanced Caption Generator")
 
 # Streamlit layout with styled container
 with st.container():
-    with st.container():
     st.markdown("<div class='container'>", unsafe_allow_html=True)
+    
     col1, col2 = st.columns([2, 1])
     with col1:
         st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
         store = st.selectbox("Store", list(store_data.keys()), key="store")
         item_name = st.text_input("Item Name", key="item_name")
         st.markdown('</div>', unsafe_allow_html=True)
+        
         st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
         price_format = st.radio("Price Format", ("x lb", "x ea"), key="price_format")
         st.markdown('</div>', unsafe_allow_html=True)
+        
     with col2:
         st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
         price = st.text_input(f"Enter price {price_format}", key="price")
         st.markdown('</div>', unsafe_allow_html=True)
+        
         st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
         start_date = st.date_input("Start Date", datetime.today(), key="start_date")
         end_date = st.date_input("End Date", start_date + timedelta(days=6), key="end_date")
         st.markdown('</div>', unsafe_allow_html=True)
+        
         if store in ["Ted's Fresh", "IFM Market"]:
             st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
             sale_type = st.selectbox("Sale Type", ["3 Day Sale", "4 Day Sale"], key="sale_type")
             st.markdown('</div>', unsafe_allow_html=True)
+            
     st.markdown("</div>", unsafe_allow_html=True)
-
         # Calendar icons for dates
         st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
         st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/calendar.png" class="input-icon" />', unsafe_allow_html=True)
