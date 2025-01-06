@@ -51,17 +51,17 @@ st.markdown(
 
 # Expanded emoji mapping
 emoji_mapping = {
-    "apple": "\ud83c\udf4e", "banana": "\ud83c\udf4c", "grape": "\ud83c\udf47", "mango": "\ud83e\udd6d", "watermelon": "\ud83c\udf49",
-    "orange": "\ud83c\udf4a", "pear": "\ud83c\udf50", "peach": "\ud83c\udf51", "strawberry": "\ud83c\udf53", "cherry": "\ud83c\udf52",
-    "kiwi": "\ud83e\udd5d", "pineapple": "\ud83c\udf4d", "blueberry": "\ud83e\udd67", "avocado": "\ud83e\udd51",
-    "carrot": "\ud83e\udd55", "broccoli": "\ud83e\udd66", "corn": "\ud83c\udf3d", "lettuce": "\ud83e\udd6c", "tomato": "\ud83c\udf45",
-    "potato": "\ud83e\udd54", "onion": "\ud83e\udd52", "garlic": "\ud83e\udd51", "pepper": "\ud83c\udf36\ufe0f", "cucumber": "\ud83e\udd52",
-    "mushroom": "\ud83c\udf44", "beef": "\ud83e\uddc9", "chicken": "\ud83c\udf57", "pork": "\ud83d\udc17", "turkey": "\ud83e\udd83",
-    "lamb": "\ud83d\udc11", "fish": "\ud83d\udc1f", "shrimp": "\ud83c\udf64", "crab": "\ud83e\udd80", "lobster": "\ud83e\udd9e",
-    "salmon": "\ud83d\udc1f", "tilapia": "\ud83d\udc1f", "milk": "\ud83e\udd5b", "cheese": "\ud83e\uddc0", "butter": "\ud83e\uddc1",
-    "egg": "\ud83e\udd5a", "yogurt": "\ud83c\udf7d", "bread": "\ud83c\udf5e", "rice": "\ud83c\udf5a", "pasta": "\ud83c\udf5d",
-    "pizza": "\ud83c\udf55", "burger": "\ud83c\udf54", "taco": "\ud83c\udf2e", "burrito": "\ud83c\udf2f", "sushi": "\ud83c\udf63",
-    "dessert": "\ud83c\udf70", "cake": "\ud83c\udf82", "cookie": "\ud83c\udf6a", "ice cream": "\ud83c\udf66", "chocolate": "\ud83c\udf6b"
+    "apple": "🍎", "banana": "🍌", "grape": "🍇", "mango": "🥭", "watermelon": "🍉",
+    "orange": "🍊", "pear": "🍐", "peach": "🍑", "strawberry": "🍓", "cherry": "🍒",
+    "kiwi": "🥝", "pineapple": "🍍", "blueberry": "🫐", "avocado": "🥑",
+    "carrot": "🥕", "broccoli": "🥦", "corn": "🌽", "lettuce": "🥬", "tomato": "🍅",
+    "potato": "🥔", "onion": "🧅", "garlic": "🧄", "pepper": "🌶️", "cucumber": "🥒",
+    "mushroom": "🍄", "beef": "🥩", "chicken": "🍗", "pork": "🐖", "turkey": "🦃",
+    "lamb": "🐑", "fish": "🐟", "shrimp": "🍤", "crab": "🦀", "lobster": "🦞",
+    "salmon": "🐟", "tilapia": "🐟", "milk": "🥛", "cheese": "🧀", "butter": "🧈",
+    "egg": "🥚", "yogurt": "🥄", "bread": "🍞", "rice": "🍚", "pasta": "🍝",
+    "pizza": "🍕", "burger": "🍔", "taco": "🌮", "burrito": "🌯", "sushi": "🍣",
+    "dessert": "🍰", "cake": "🎂", "cookie": "🍪", "ice cream": "🍦", "chocolate": "🍫"
 }
 
 # Function to fetch emoji
@@ -69,47 +69,47 @@ def get_emoji(item_name):
     for key in emoji_mapping:
         if key in item_name.lower():
             return emoji_mapping[key]
-    return "\ud83c\udf72"
+    return "🍽️"
 
 # Store-specific data
 store_data = {
     "Ted's Fresh": {
-        "template": "{sale_type} \u23f0\n{emoji} {item_name} {price}.\nOnly {date_range}\n.\n.\n{hashtags}",
+        "template": "{sale_type} ⏰\n{emoji} {item_name} {price}.\nOnly {date_range}\n.\n.\n{hashtags}",
         "location": "",
         "hashtags": "#Meat #Produce #USDA #Halal #tedsfreshmarket #tedsmarket #grocerydeals #weeklydeals #freshproduce #halalmeats",
     },
     "IFM Market": {
-        "template": "{sale_type} \u23f0\n{emoji} {item_name} {price}.\nOnly {date_range}\n.\n.\n{hashtags}",
+        "template": "{sale_type} ⏰\n{emoji} {item_name} {price}.\nOnly {date_range}\n.\n.\n{hashtags}",
         "location": "",
         "hashtags": "#Naperville #Fresh #Market #Produce #Meat #internationalfreshmarket",
     },
     "Fiesta Market": {
-        "template": "{emoji} {item_name} {price}.\n\u23f0 {date_range}\n\u27a1\ufe0f {location}\n.\n.\n{hashtags}",
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
         "location": "9710 Main St. Lamont, Ca.",
         "hashtags": "#fiestamarket #grocerydeals #weeklyspecials #freshproduce #meats",
     },
     "Viva": {
-        "template": "{emoji} {item_name} {price}.\n\u23f0 Deal from {date_range}\n\ud83c\udf1f Only at Viva Supermarket\n.\n.\n{hashtags}",
+        "template": "{emoji} {item_name} {price}.\n⏰ Deal from {date_range}\n🌟 Only at Viva Supermarket\n.\n.\n{hashtags}",
         "location": "",
         "hashtags": "#vivasupermarket #grocerydeals #groceryspecials #weeklysavings #weeklyspecials #grocery #abarrotes #carniceria #mariscos #seafood #produce #frutasyverduras #ahorros #ofertas",
     },
     "La Princesa Watsonville": {
-        "template": "{emoji} {item_name} {price}.\n\u23f0 {date_range}\n\u27a1\ufe0f {location}\n.\n.\n{hashtags}",
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
         "location": "123 Main St. Watsonville, Ca.",
         "hashtags": "#laprincesa #watsonville #grocerydeals #weeklyspecials #freshproduce #meats",
     },
     "Sam's Food": {
-        "template": "{emoji} {item_name} {price}.\n\u23f0 {date_range}\n\u27a1\ufe0f {location}\n.\n.\n{hashtags}",
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
         "location": "456 Elm St. Fresno, Ca.",
         "hashtags": "#samsfood #fresno #grocerydeals #weeklyspecials #freshproduce #meats",
     },
     "Puesto Market": {
-        "template": "{emoji} {item_name} {price}.\n\u23f0 {date_range}\n\u27a1\ufe0f {location}\n.\n.\n{hashtags}",
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
         "location": "789 Oak St. Bakersfield, Ca.",
         "hashtags": "#puestomarket #bakersfield #grocerydeals #weeklyspecials #freshproduce #meats",
     },
     "Rranch": {
-        "template": "{emoji} {item_name} {price}.\n\u23f0 {date_range}\n\u27a1\ufe0f {location}\n.\n.\n{hashtags}",
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
         "location": "987 Pine St. Sacramento, Ca.",
         "hashtags": "#rranch #sacramento #grocerydeals #weeklyspecials #freshproduce #meats",
     }
@@ -165,7 +165,7 @@ with st.container():
         try:
             price = float(price)
             if price.is_integer():
-                price = f"{int(price)}\u00a2"
+                price = f"{int(price)}¢"
             else:
                 price = f"${price:.2f}"
         except ValueError:
