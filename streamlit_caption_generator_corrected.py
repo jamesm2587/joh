@@ -88,29 +88,90 @@ store_data = {
         "location": "9710 Main St. Lamont, Ca.",
         "hashtags": "#fiestamarket #grocerydeals #weeklyspecials #freshproduce #meats",
     },
-    # Add other stores as needed
+    "Viva": {
+        "template": "{emoji} {item_name} {price}.\n⏰ Deal from {date_range}\n🌟 Only at Viva Supermarket\n.\n.\n{hashtags}",
+        "location": "",
+        "hashtags": "#vivasupermarket #grocerydeals #groceryspecials #weeklysavings #weeklyspecials #grocery #abarrotes #carniceria #mariscos #seafood #produce #frutasyverduras #ahorros #ofertas",
+    },
+    "La Princesa Watsonville": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "123 Main St. Watsonville, Ca.",
+        "hashtags": "#laprincesa #watsonville #grocerydeals #weeklyspecials #freshproduce #meats",
+    },
+    "Sam's Food": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "456 Elm St. Fresno, Ca.",
+        "hashtags": "#samsfood #fresno #grocerydeals #weeklyspecials #freshproduce #meats",
+    },
+    "Puesto Market": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "789 Oak St. Bakersfield, Ca.",
+        "hashtags": "#puestomarket #bakersfield #grocerydeals #weeklyspecials #freshproduce #meats",
+    },
+    "Rranch": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "987 Pine St. Sacramento, Ca.",
+        "hashtags": "#rranch #sacramento #grocerydeals #weeklyspecials #freshproduce #meats",
+    }
 }
 
 # Streamlit App
-st.title("Enhanced Caption Generator with Dynamic Previews")
+st.title("Enhanced Caption Generator")
 
+# Streamlit layout with styled container
 with st.container():
+    st.markdown("<div class='container'>", unsafe_allow_html=True)
+
     col1, col2 = st.columns([2, 1])
     with col1:
+        # Item Name icon
+        st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
+        st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/shopping-cart.png" class="input-icon" />', unsafe_allow_html=True)
         store = st.selectbox("Store", list(store_data.keys()), key="store")
         item_name = st.text_input("Item Name", key="item_name")
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Price icon
+        st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
+        st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/price-tag.png" class="input-icon" />', unsafe_allow_html=True)
         price_format = st.radio("Price Format", ("x lb", "x ea"), key="price_format")
+        st.markdown('</div>', unsafe_allow_html=True)
+        
     with col2:
+        # Price input field
+        st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
+        st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/price-tag.png" class="input-icon" />', unsafe_allow_html=True)
         price = st.text_input(f"Enter price {price_format}", key="price")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        # Calendar icons for dates
+        st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
+        st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/calendar.png" class="input-icon" />', unsafe_allow_html=True)
         start_date = st.date_input("Start Date", datetime.today(), key="start_date")
         end_date = st.date_input("End Date", start_date + timedelta(days=6), key="end_date")
         date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    sale_type = ""
-    if store in ["Ted's Fresh", "IFM Market"]:
-        sale_type = st.selectbox("Sale Type", ["3 Day Sale", "4 Day Sale"], key="sale_type")
+        # Sale Type icon (if necessary)
+        sale_type = ""
+        if store in ["Ted's Fresh", "IFM Market"]:
+            st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
+            st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/tag.png" class="input-icon" />', unsafe_allow_html=True)
+            sale_type = st.selectbox("Sale Type", ["3 Day Sale", "4 Day Sale"], key="sale_type")
+            st.markdown('</div>', unsafe_allow_html=True)
 
-    # Generate Caption
+    # Format price
+    if price:
+        try:
+            price = float(price)
+            if price.is_integer():
+                price = f"{int(price)}¢"
+            else:
+                price = f"${price:.2f}"
+        except ValueError:
+            price = "Invalid price entered"
+
+    # Generate caption
     if st.button("Generate Caption"):
         store_info = store_data[store]
         emoji = get_emoji(item_name)
@@ -126,11 +187,4 @@ with st.container():
         )
         st.text_area("Generated Caption", value=caption, height=200)
 
-        # Dynamic Previews
-        st.markdown("### Dynamic Previews")
-        st.markdown("#### Instagram Preview")
-        st.markdown(f"<div style='background: #fefefe; padding: 15px;'>{caption}</div>", unsafe_allow_html=True)
-        st.markdown("#### Facebook Preview")
-        st.markdown(f"<div style='background: #e9f3ff; padding: 15px;'>{caption}</div>", unsafe_allow_html=True)
-        st.markdown("#### Twitter Preview")
-        st.markdown(f"<div style='background: #f5f8fa; padding: 15px;'>{caption}</div>", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
