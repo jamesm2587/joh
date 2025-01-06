@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 # Custom CSS for gradients, shadows, and glass effects
 st.markdown(
     """
+    st.markdown(
+    """
     <style>
     body {
         background: linear-gradient(135deg, #f3f4f7, #e4e7ed);
@@ -11,7 +13,7 @@ st.markdown(
         margin: 0;
         padding: 0;
     }
-    .stButton>button {
+    .stButton>button, .stTextArea textarea {
         background: linear-gradient(135deg, #6a11cb, #2575fc);
         color: white;
         padding: 10px 20px;
@@ -23,21 +25,15 @@ st.markdown(
     .stButton>button:hover {
         transform: scale(1.05);
     }
-    .stTextArea textarea {
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(10px);
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    .stTextInput, .stSelectbox, .stRadio, .stDateInput, .stTextArea textarea {
+        display: inline-block;
+        width: calc(100% - 40px); /* Adjust width to make space for icons */
     }
     .input-icon {
         width: 20px;
         height: 20px;
         vertical-align: middle;
         margin-right: 10px;
-    }
-    .stTextInput, .stSelectbox, .stRadio, .stDateInput {
-        display: inline-block;
-        width: calc(100% - 40px); /* Adjust width to make space for icons */
     }
     .input-wrapper {
         display: flex;
