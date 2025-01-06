@@ -4,8 +4,6 @@ from datetime import datetime, timedelta
 # Custom CSS for gradients, shadows, and glass effects
 st.markdown(
     """
-    st.markdown(
-    """
     <style>
     body {
         background: linear-gradient(135deg, #f3f4f7, #e4e7ed);
@@ -44,7 +42,6 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
 # Expanded emoji mapping
 emoji_mapping = {
     "apple": "🍎", "banana": "🍌", "grape": "🍇", "mango": "🥭", "watermelon": "🍉",
