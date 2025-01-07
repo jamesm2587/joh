@@ -32,7 +32,7 @@ st.markdown(
     .input-icon {
         width: 20px;
         height: 20px;
-        vertical-align: middle;
+        vertical-align: left;
         margin-right: 10px;
     }
     .stTextInput, .stSelectbox, .stRadio, .stDateInput {
