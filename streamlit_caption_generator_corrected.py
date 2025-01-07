@@ -170,4 +170,22 @@ with st.container():
             sale_type = st.selectbox("Sale Type", ["3 Day Sale", "4 Day Sale"], key="sale_type")
             st.markdown('</div>', unsafe_allow_html=True)
 
+        # Generate caption
+    if st.button("Generate Caption"):
+        store_info = store_data[store]
+        emoji = get_emoji(item_name)
+        formatted_price = f"{price} {price_format}" if price else "Price not entered"
+        caption = store_info["template"].format(
+            emoji=emoji,
+            item_name=item_name,
+            price=formatted_price,
+            date_range=date_range,
+            location=store_info["location"] if store_info["location"] else "",
+            hashtags=store_info["hashtags"],
+            sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
+        )
+        st.text_area("Generated Caption", value=caption, height=200)
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
    
