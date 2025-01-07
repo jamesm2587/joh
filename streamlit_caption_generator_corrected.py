@@ -183,35 +183,21 @@ with st.container():
 
     # Generate caption
     if st.button("Generate Caption"):
-        store_info = store_data[store]
-        emoji = get_emoji(item_name)
-        formatted_price = f"{price} {price_format}" if price else "Price not entered"
-        caption = store_info["template"].format(
-            emoji=emoji,
-            item_name=item_name,
-            price=formatted_price,
-            date_range=date_range,
-            location=store_info["location"] if store_info["location"] else "",
-            hashtags=store_info["hashtags"],
-            sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
-        )
-        st.text_area("Generated Caption", value=caption, height=200)
-
-        # JavaScript for clipboard functionality
-        st.markdown(
-            f"""
-            <script>
-            function copyToClipboard() {{
-                var copyText = document.getElementById("generated-caption");
-                copyText.select();
-                document.execCommand("copy");
-            }}
-            </script>
-            """,
-            unsafe_allow_html=True,
-        )
-
-        # Copy to clipboard button
-        st.button("Copy to Clipboard", on_click="copyToClipboard()")
+        store_info = store_data.get(store, {})
+        if not store_info:
+            st.error("Please select a valid store.")
+        else:
+            emoji = get_emoji(item_name)
+            formatted_price = f"{price} {price_format}" if price else "Price not entered"
+            caption = store_info["template"].format(
+                emoji=emoji,
+                item_name=item_name,
+                price=formatted_price,
+                date_range=date_range,
+                location=store_info["location"] if store_info["location"] else "",
+                hashtags=store_info["hashtags"],
+                sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
+            )
+            st.text_area("Generated Caption", value=caption, height=200)
 
     st.markdown("</div>", unsafe_allow_html=True)
