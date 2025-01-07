@@ -107,11 +107,11 @@ with st.container():
         item_name = st.text_input("Item Name", key="item_name")
 
         # Price Format
-        price_format = st.radio("Price Format", ("x lb", "x ea"), key="price_format")
+        price_format = st.radio("Price Format", ("lb", "ea"), key="price_format")
 
     with col2:
         # Price input field
-        price = st.text_input(f"Enter price {price_format}", key="price")
+        price = st.text_input("Enter price", key="price")
 
         # Single calendar for date range
         date_range = st.date_input("Select Start and End Dates", [datetime.today(), datetime.today() + timedelta(days=6)], key="date_range")
@@ -130,7 +130,10 @@ with st.container():
     if price:
         try:
             price_value = float(price)
-            formatted_price = f"${price_value:.2f} {price_format.split()[1]}"
+            if price_value < 1:
+                formatted_price = f"{int(price_value * 100)}¢ {price_format}"
+            else:
+                formatted_price = f"${price_value:.2f} {price_format}"
         except ValueError:
             formatted_price = "Invalid price format"
 
