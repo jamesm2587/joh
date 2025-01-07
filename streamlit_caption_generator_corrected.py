@@ -146,11 +146,11 @@ with st.container():
 
         # Calendar icons for dates
         st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
-        st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/calendar.png" class="input-icon" />', unsafe_allow_html=True)
-        start_date = st.date_input("Start Date", datetime.today(), key="start_date")
-        end_date = st.date_input("End Date", start_date + timedelta(days=6), key="end_date")
-        date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
-        st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/calendar.png" class="input-icon" />', unsafe_allow_html=True)
+start_date = st.date_input("Select Start Date", datetime.today(), key="start_date")
+end_date = start_date + timedelta(days=6)  # Automatically calculate end date as 6 days later
+date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
+st.markdown('</div>', unsafe_allow_html=True)
 
         # Sale Type icon (if necessary)
         sale_type = ""
