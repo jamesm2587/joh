@@ -1,5 +1,6 @@
 import streamlit as st
 from datetime import datetime, timedelta
+import pyperclip  # Importing pyperclip for clipboard functionality
 
 # Custom CSS for gradients, shadows, and glass effects
 st.markdown(
