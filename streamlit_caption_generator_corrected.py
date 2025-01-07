@@ -88,7 +88,31 @@ store_data = {
         "location": "9710 Main St. Lamont, Ca.",
         "hashtags": "#fiestamarket #grocerydeals #weeklyspecials #freshproduce #meats",
     },
-    # Add other stores as needed...
+    "Viva": {
+        "template": "{emoji} {item_name} {price}.\n⏰ Deal from {date_range}\n🌟 Only at Viva Supermarket\n.\n.\n{hashtags}",
+        "location": "",
+        "hashtags": "#vivasupermarket #grocerydeals #groceryspecials #weeklysavings #weeklyspecials #grocery #abarrotes #carniceria #mariscos #seafood #produce #frutasyverduras #ahorros #ofertas",
+    },
+    "La Princesa Watsonville": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "123 Main St. Watsonville, Ca.",
+        "hashtags": "#laprincesa #watsonville #grocerydeals #weeklyspecials #freshproduce #meats",
+    },
+    "Sam's Food": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "456 Elm St. Fresno, Ca.",
+        "hashtags": "#samsfood #fresno #grocerydeals #weeklyspecials #freshproduce #meats",
+    },
+    "Puesto Market": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "789 Oak St. Bakersfield, Ca.",
+        "hashtags": "#puestomarket #bakersfield #grocerydeals #weeklyspecials #freshproduce #meats",
+    },
+    "Rranch": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "987 Pine St. Sacramento, Ca.",
+        "hashtags": "#rranch #sacramento #grocerydeals #weeklyspecials #freshproduce #meats",
+    }
 }
 
 # Streamlit App
@@ -100,52 +124,63 @@ with st.container():
 
     col1, col2 = st.columns([2, 1])
     with col1:
-        # Store selection
+        # Item Name icon
+        st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
+        st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/shopping-cart.png" class="input-icon" />', unsafe_allow_html=True)
         store = st.selectbox("Store", list(store_data.keys()), key="store")
-
-        # Item Name
         item_name = st.text_input("Item Name", key="item_name")
-
-        # Price Format
-        price_format = st.radio("Price Format", ("lb", "ea"), key="price_format")
-
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Price icon
+        st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
+        st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/price-tag.png" class="input-icon" />', unsafe_allow_html=True)
+        price_format = st.radio("Price Format", ("x lb", "x ea"), key="price_format")
+        st.markdown('</div>', unsafe_allow_html=True)
+        
     with col2:
         # Price input field
-        price = st.text_input("Enter price", key="price")
+        st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
+        st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/price-tag.png" class="input-icon" />', unsafe_allow_html=True)
+        price = st.text_input(f"Enter price {price_format}", key="price")
+        st.markdown('</div>', unsafe_allow_html=True)
 
-        # Single calendar for date range
-        date_range = st.date_input("Select Start and End Dates", [datetime.today(), datetime.today() + timedelta(days=6)], key="date_range")
+        # Calendar icons for dates
+        st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
+        st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/calendar.png" class="input-icon" />', unsafe_allow_html=True)
+        start_date = st.date_input("Start Date", datetime.today(), key="start_date")
+        end_date = st.date_input("End Date", start_date + timedelta(days=6), key="end_date")
+        date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
+        st.markdown('</div>', unsafe_allow_html=True)
 
-        # Extract start and end dates
-        start_date, end_date = date_range[0], date_range[-1]
-        formatted_date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
-
-        # Sale Type
+        # Sale Type icon (if necessary)
         sale_type = ""
         if store in ["Ted's Fresh", "IFM Market"]:
+            st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
+            st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/tag.png" class="input-icon" />', unsafe_allow_html=True)
             sale_type = st.selectbox("Sale Type", ["3 Day Sale", "4 Day Sale"], key="sale_type")
+            st.markdown('</div>', unsafe_allow_html=True)
 
     # Format price
-    formatted_price = "Enter a valid price"
     if price:
         try:
-            price_value = float(price)
-            if price_value < 1:
-                formatted_price = f"{int(price_value * 100)}¢ {price_format}"
+            price = float(price)
+            if price.is_integer():
+                price = f"{int(price)}¢"
             else:
-                formatted_price = f"${price_value:.2f} {price_format}"
+                price = f"${price:.2f}"
         except ValueError:
-            formatted_price = "Invalid price format"
+            price = "Invalid price entered"
 
     # Generate caption
     if st.button("Generate Caption"):
         store_info = store_data[store]
         emoji = get_emoji(item_name)
+        formatted_price = f"{price} {price_format}" if price else "Price not entered"
         caption = store_info["template"].format(
             emoji=emoji,
             item_name=item_name,
             price=formatted_price,
-            date_range=formatted_date_range,
+            date_range=date_range,
             location=store_info["location"] if store_info["location"] else "",
             hashtags=store_info["hashtags"],
             sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
