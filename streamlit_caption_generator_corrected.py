@@ -6,43 +6,64 @@ st.markdown(
     """
     <style>
     body {
-        background: linear-gradient(135deg, #f3f4f7, #e4e7ed);
-        font-family: 'Arial', sans-serif;
+        background: linear-gradient(135deg, #e6f0f9, #c3d9e3);
+        font-family: 'Roboto', sans-serif;
         margin: 0;
         padding: 0;
+        color: #333;
     }
     .stButton>button {
         background: linear-gradient(135deg, #6a11cb, #2575fc);
         color: white;
-        padding: 10px 20px;
+        padding: 12px 24px;
         border: none;
         border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        font-size: 16px;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     .stButton>button:hover {
-        transform: scale(1.00);
+        transform: scale(1.05);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     }
     .stTextArea textarea {
-        background: rgba(255, 255, 200, 0.8);
-        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(15px);
         border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ccc;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 12px;
+        font-size: 14px;
+        font-family: 'Roboto', sans-serif;
     }
-    .input-icon {
-        width: 20px;
-        height: 20px;
-        vertical-align: middle;
-        margin-right: 10px;
-    }
-    .stTextInput, .stSelectbox, .stRadio, .stDateInput {
-        display: inline-block;
-        width: calc(100% - 40px); /* Adjust width to make space for icons */
+    .stTextArea textarea:focus {
+        outline: none;
+        border-color: #2575fc;
     }
     .input-wrapper {
         display: flex;
         align-items: center;
-        margin-bottom: 12px;
+        margin-bottom: 16px;
+    }
+    .input-wrapper img {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+    }
+    .stSelectbox, .stTextInput, .stRadio {
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        width: 100%;
+    }
+    .stSelectbox select, .stTextInput input, .stRadio input {
+        background-color: #f9f9f9;
+    }
+    .stSelectbox select:focus, .stTextInput input:focus, .stRadio input:focus {
+        outline: none;
+        border-color: #2575fc;
     }
     </style>
     """,
