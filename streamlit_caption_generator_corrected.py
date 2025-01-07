@@ -7,7 +7,7 @@ st.markdown(
     <style>
     body {
         background: linear-gradient(135deg, #f3f4f7, #e4e7ed);
-        font-family: 'Arial', sans-serif;
+        font-family: 'Roboto', sans-serif;
         margin: 0;
         padding: 0;
     }
