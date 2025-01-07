@@ -166,7 +166,7 @@ with st.container():
         sale_type = ""
         if store in ["Ted's Fresh", "IFM Market"]:
             st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
-            st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/tag.png" class="input-icon" />', unsafe_allow_html=True)
+            st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/discount--v1.png" class="input-icon" />', unsafe_allow_html=True)
             sale_type = st.selectbox("Sale Type", ["3 Day Sale", "4 Day Sale"], key="sale_type")
             st.markdown('</div>', unsafe_allow_html=True)
 
