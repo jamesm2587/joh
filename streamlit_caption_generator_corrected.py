@@ -27,6 +27,38 @@ st.markdown(
         transform: scale(1.05);
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     }
+    .input-wrapper {
+        display: flex;
+        align-items: center;
+        margin-bottom: 16px;
+        position: relative;
+    }
+    .input-wrapper img {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+    }
+    .stSelectbox, .stTextInput, .stRadio {
+        padding-left: 35px; /* To make space for the icon */
+        padding-right: 10px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        width: 100%;
+        background-color: #f9f9f9;
+    }
+    .stSelectbox select, .stTextInput input, .stRadio input {
+        background-color: #f9f9f9;
+    }
+    .stSelectbox select:focus, .stTextInput input:focus, .stRadio input:focus {
+        outline: none;
+        border-color: #2575fc;
+    }
     .stTextArea textarea {
         background: rgba(255, 255, 255, 0.9);
         backdrop-filter: blur(15px);
@@ -38,30 +70,6 @@ st.markdown(
         font-family: 'Roboto', sans-serif;
     }
     .stTextArea textarea:focus {
-        outline: none;
-        border-color: #2575fc;
-    }
-    .input-wrapper {
-        display: flex;
-        align-items: center;
-        margin-bottom: 16px;
-    }
-    .input-wrapper img {
-        width: 20px;
-        height: 20px;
-        margin-right: 10px;
-    }
-    .stSelectbox, .stTextInput, .stRadio {
-        padding: 10px;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-        font-size: 14px;
-        width: 100%;
-    }
-    .stSelectbox select, .stTextInput input, .stRadio input {
-        background-color: #f9f9f9;
-    }
-    .stSelectbox select:focus, .stTextInput input:focus, .stRadio input:focus {
         outline: none;
         border-color: #2575fc;
     }
@@ -145,35 +153,43 @@ with st.container():
 
     col1, col2 = st.columns([2, 1])
     with col1:
-        # Item Name icon
+        # Item Name icon inside the input box
         st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
         st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/shopping-cart.png" class="input-icon" />', unsafe_allow_html=True)
         store = st.selectbox("Store", list(store_data.keys()), key="store")
         item_name = st.text_input("Item Name", key="item_name")
         st.markdown('</div>', unsafe_allow_html=True)
         
-        # Price icon
+        # Price icon inside the input box
         st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
         st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/price-tag.png" class="input-icon" />', unsafe_allow_html=True)
         price_format = st.radio("Price Format", ("x lb", "x ea"), key="price_format")
         st.markdown('</div>', unsafe_allow_html=True)
         
     with col2:
-        # Price input field
+        # Price input field with icon inside the box
         st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
         st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/price-tag.png" class="input-icon" />', unsafe_allow_html=True)
         price = st.text_input(f"Enter price {price_format}", key="price")
         st.markdown('</div>', unsafe_allow_html=True)
 
-        # Single calendar for start and end dates
+        # Calendar icon inside the input box
         st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
         st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/calendar.png" class="input-icon" />', unsafe_allow_html=True)
-        selected_dates = st.date_input(
-            "Select Start and End Dates",
-            [datetime.today(), datetime.today() + timedelta(days=6)],
-            key="selected_dates"
-        )
+        start_date = st.date_input("Start Date", datetime.today(), key="start_date")
+        end_date = st.date_input("End Date", start_date + timedelta(days=6), key="end_date")
+        date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
+        st.markdown('</div>', unsafe_allow_html=True)
 
+        # Sale Type icon inside the input box (optional)
+        sale_type = ""
+        if store in ["Ted's Fresh", "IFM Market"]:
+            st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
+            st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/tag.png" class="input-icon" />', unsafe_allow_html=True)
+            sale_type = st.selectbox("Sale Type", ["3 Day Sale", "4 Day Sale"], key="sale_type")
+            st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown("</div>", unsafe_allow_html=True)
         # Ensure both dates are selected
         if len(selected_dates) == 2:
             start_date, end_date = selected_dates
