@@ -144,14 +144,23 @@ with st.container():
         price = st.text_input(f"Enter price {price_format}", key="price")
         st.markdown('</div>', unsafe_allow_html=True)
 
-        # Calendar icons for dates
+        # Single calendar for start and end dates
         st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
         st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/calendar.png" class="input-icon" />', unsafe_allow_html=True)
-        start_date = st.date_input("Select Start Date", datetime.today(), key="start_date")
-        end_date = start_date + timedelta(days=6)  # Automatically calculate end date as 6 days later
-        date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
-        st.markdown('</div>', unsafe_allow_html=True)
+        selected_dates = st.date_input(
+            "Select Start and End Dates",
+            [datetime.today(), datetime.today() + timedelta(days=6)],
+            key="selected_dates"
+        )
 
+# Ensure both dates are selected
+if len(selected_dates) == 2:
+    start_date, end_date = selected_dates
+    date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
+else:
+    start_date = end_date = datetime.today()
+    date_range = "Please select both start and end dates."
+st.markdown('</div>', unsafe_allow_html=True)
 
         # Sale Type icon (if necessary)
         sale_type = ""
