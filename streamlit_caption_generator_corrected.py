@@ -200,4 +200,21 @@ with st.container():
             )
             st.text_area("Generated Caption", value=caption, height=200)
 
+            # Add Copy to Clipboard Button (via JavaScript)
+            st.markdown(
+                """
+                <script>
+                function copyToClipboard() {
+                    var text = document.querySelector(".generated-caption").value;
+                    navigator.clipboard.writeText(text).then(function() {
+                        alert('Caption copied to clipboard!');
+                    }, function() {
+                        alert('Failed to copy caption!');
+                    });
+                }
+                </script>
+                """, unsafe_allow_html=True
+            )
+
+            st.button("Copy to Clipboard", on_click=lambda: st.text_area("Generated Caption", value=caption, key="generated_caption"))
     st.markdown("</div>", unsafe_allow_html=True)
