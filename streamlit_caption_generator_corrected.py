@@ -1,6 +1,5 @@
 import streamlit as st
 from datetime import datetime, timedelta
-import pyperclip  # Importing pyperclip for clipboard functionality
 
 # Custom CSS for gradients, shadows, and glass effects
 st.markdown(
@@ -198,6 +197,21 @@ with st.container():
         )
         st.text_area("Generated Caption", value=caption, height=200)
 
+        # JavaScript for clipboard functionality
+        st.markdown(
+            f"""
+            <script>
+            function copyToClipboard() {{
+                var copyText = document.getElementById("generated-caption");
+                copyText.select();
+                document.execCommand("copy");
+            }}
+            </script>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        # Copy to clipboard button
+        st.button("Copy to Clipboard", on_click="copyToClipboard()")
+
     st.markdown("</div>", unsafe_allow_html=True)
-
-
