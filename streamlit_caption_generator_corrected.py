@@ -153,14 +153,14 @@ with st.container():
             key="selected_dates"
         )
 
-# Ensure both dates are selected
-if len(selected_dates) == 2:
-    start_date, end_date = selected_dates
-    date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
-else:
-    start_date = end_date = datetime.today()
-    date_range = "Please select both start and end dates."
-st.markdown('</div>', unsafe_allow_html=True)
+        # Ensure both dates are selected
+        if len(selected_dates) == 2:
+            start_date, end_date = selected_dates
+            date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
+        else:
+            start_date = end_date = datetime.today()
+            date_range = "Please select both start and end dates."
+        st.markdown('</div>', unsafe_allow_html=True)
 
         # Sale Type icon (if necessary)
         sale_type = ""
@@ -170,31 +170,4 @@ st.markdown('</div>', unsafe_allow_html=True)
             sale_type = st.selectbox("Sale Type", ["3 Day Sale", "4 Day Sale"], key="sale_type")
             st.markdown('</div>', unsafe_allow_html=True)
 
-    # Format price
-    if price:
-        try:
-            price = float(price)
-            if price.is_integer():
-                price = f"{int(price)}¢"
-            else:
-                price = f"${price:.2f}"
-        except ValueError:
-            price = "Invalid price entered"
-
-    # Generate caption
-    if st.button("Generate Caption"):
-        store_info = store_data[store]
-        emoji = get_emoji(item_name)
-        formatted_price = f"{price} {price_format}" if price else "Price not entered"
-        caption = store_info["template"].format(
-            emoji=emoji,
-            item_name=item_name,
-            price=formatted_price,
-            date_range=date_range,
-            location=store_info["location"] if store_info["location"] else "",
-            hashtags=store_info["hashtags"],
-            sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
-        )
-        st.text_area("Generated Caption", value=caption, height=200)
-
-    st.markdown("</div>", unsafe_allow_html=True)
+   
