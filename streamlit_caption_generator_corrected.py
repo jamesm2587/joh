@@ -7,7 +7,7 @@ st.markdown(
     <style>
     body {
         background: linear-gradient(135deg, #f3f4f7, #e4e7ed);
-        font-family: 'Roboto', sans-serif;
+        font-family: 'Arial', sans-serif;
         margin: 0;
         padding: 0;
     }
@@ -32,7 +32,7 @@ st.markdown(
     .input-icon {
         width: 20px;
         height: 20px;
-        vertical-align: left;
+        vertical-align: middle;
         margin-right: 10px;
     }
     .stTextInput, .stSelectbox, .stRadio, .stDateInput {
@@ -183,38 +183,19 @@ with st.container():
 
     # Generate caption
     if st.button("Generate Caption"):
-        store_info = store_data.get(store, {})
-        if not store_info:
-            st.error("Please select a valid store.")
-        else:
-            emoji = get_emoji(item_name)
-            formatted_price = f"{price} {price_format}" if price else "Price not entered"
-            caption = store_info["template"].format(
-                emoji=emoji,
-                item_name=item_name,
-                price=formatted_price,
-                date_range=date_range,
-                location=store_info["location"] if store_info["location"] else "",
-                hashtags=store_info["hashtags"],
-                sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
-            )
-            st.text_area("Generated Caption", value=caption, height=200)
+        store_info = store_data[store]
+        emoji = get_emoji(item_name)
+        formatted_price = f"{price} {price_format}" if price else "Price not entered"
+        caption = store_info["template"].format(
+            emoji=emoji,
+            item_name=item_name,
+            price=formatted_price,
+            date_range=date_range,
+            location=store_info["location"] if store_info["location"] else "",
+            hashtags=store_info["hashtags"],
+            sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
+        )
+        st.text_area("Generated Caption", value=caption, height=200)
 
-            # Add Copy to Clipboard Button (via JavaScript)
-            st.markdown(
-                """
-                <script>
-                function copyToClipboard() {
-                    var text = document.querySelector(".generated-caption").value;
-                    navigator.clipboard.writeText(text).then(function() {
-                        alert('Caption copied to clipboard!');
-                    }, function() {
-                        alert('Failed to copy caption!');
-                    });
-                }
-                </script>
-                """, unsafe_allow_html=True
-            )
-
-            st.button("Copy to Clipboard", on_click=lambda: st.text_area("Generated Caption", value=caption, key="generated_caption"))
     st.markdown("</div>", unsafe_allow_html=True)
+
