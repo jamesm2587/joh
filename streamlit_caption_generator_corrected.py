@@ -18,10 +18,10 @@ st.markdown(
         border: none;
         border-radius: 8px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s ease;
+        transition: transform 2.2s ease;
     }
     .stButton>button:hover {
-        transform: scale(5.05);
+        transform: scale(1.00);
     }
     .stTextArea textarea {
         background: rgba(255, 255, 200, 0.8);
