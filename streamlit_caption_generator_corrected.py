@@ -73,6 +73,7 @@ def get_emoji(item_name):
 
 # Store-specific data
 store_data = {
+   store_data = {
     "Ted's Fresh": {
         "template": "{sale_type} ⏰\n{emoji} {item_name} {price}.\nOnly {date_range}\n.\n.\n{hashtags}",
         "location": "",
@@ -94,25 +95,25 @@ store_data = {
         "hashtags": "#vivasupermarket #grocerydeals #groceryspecials #weeklysavings #weeklyspecials #grocery #abarrotes #carniceria #mariscos #seafood #produce #frutasyverduras #ahorros #ofertas",
     },
     "La Princesa Watsonville": {
-        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
-        "location": "123 Main St. Watsonville, Ca.",
-        "hashtags": "#laprincesa #watsonville #grocerydeals #weeklyspecials #freshproduce #meats",
+        "template": "{emoji} {item_name} {price}.\n⏰ Hasta {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
+        "location": "1260 Main St. ↔️ 1424 Freedom Blvd.",
+        "hashtags": "#laprincesawatsonville #ahorrosdelasemana #ahorrosdeabarrotes #freshproduce #freshmeats #carniceria #frutasyverduras",
+    },
+    "Mi Rancho": {
+        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n📍 {location}\n.\n.\n{hashtags}",
+        "location": "400 W. Perkins, McFarland, California",
+        "hashtags": "#miranchomarketmcfarland #miranchomarket #mcfarlandca #mcfarland #ahorrosdelasemana #ahorrosdeabarrotes #freshproduce #freshmeats #carniceria #frutasyverduras",
+    },
+    "Mi Tiendita": {
+        "template": "{emoji} {item_name} {price}.\n⏰ Ahorros {date_range}\n📍 {location}\n.\n.\n{hashtags}",
+        "location": "3145 Payne Ave. San Jose, CA 95117",
+        "hashtags": "#OfertasDeLaSemana #MiTiendita #Ahorra #Sabor #Carne #Verduras #ahorros #grocerydeal #weeklysavings #weeklydeals",
     },
     "Sam's Food": {
-        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
-        "location": "456 Elm St. Fresno, Ca.",
-        "hashtags": "#samsfood #fresno #grocerydeals #weeklyspecials #freshproduce #meats",
+        "template": "{emoji} {item_name} {price}.\n⏰ Pricing {date_range}\n📍 {location}\n.\n.\n{hashtags}",
+        "location": "1805 Dairy Ave. Corcoran, CA.",
+        "hashtags": "#samsfood #corcoranca #grocerydeals #weeklyspecials #freshproduce #meats",
     },
-    "Puesto Market": {
-        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
-        "location": "789 Oak St. Bakersfield, Ca.",
-        "hashtags": "#puestomarket #bakersfield #grocerydeals #weeklyspecials #freshproduce #meats",
-    },
-    "Rranch": {
-        "template": "{emoji} {item_name} {price}.\n⏰ {date_range}\n➡️ {location}\n.\n.\n{hashtags}",
-        "location": "987 Pine St. Sacramento, Ca.",
-        "hashtags": "#rranch #sacramento #grocerydeals #weeklyspecials #freshproduce #meats",
-    }
 }
 
 # Streamlit App
