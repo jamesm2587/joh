@@ -73,7 +73,6 @@ def get_emoji(item_name):
 
 # Store-specific data
 store_data = {
-   store_data = {
     "Ted's Fresh": {
         "template": "{sale_type} ⏰\n{emoji} {item_name} {price}.\nOnly {date_range}\n.\n.\n{hashtags}",
         "location": "",
@@ -115,6 +114,7 @@ store_data = {
         "hashtags": "#samsfood #corcoranca #grocerydeals #weeklyspecials #freshproduce #meats",
     },
 }
+
 
 # Streamlit App
 st.title("Enhanced Caption Generator")
