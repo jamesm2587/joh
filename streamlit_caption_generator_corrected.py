@@ -37,7 +37,7 @@ st.markdown(
     }
     .stTextInput, .stSelectbox, .stRadio, .stDateInput {
         display: inline-block;
-        width: calc(100% - 40px); /* Adjust width to make space for icons */
+        width: calc(100% - 100px); /* Adjust width to make space for icons */
     }
     .input-wrapper {
         display: flex;
