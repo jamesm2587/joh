@@ -21,7 +21,7 @@ st.markdown(
         transition: transform 0.2s ease;
     }
     .stButton>button:hover {
-        transform: scale(1.50);
+        transform: scale(1.20);
     }
     .stTextArea textarea {
         background: rgba(255, 255, 200, 0.8);
