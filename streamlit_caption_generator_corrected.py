@@ -13,7 +13,7 @@ st.markdown(
     }
     .stButton>button {
         background: linear-gradient(135deg, #6a11cb, #2575fc);
-        color: black;
+        color: White;
         padding: 35px 30px;
         border: none;
         border-radius: 8px;
@@ -21,7 +21,7 @@ st.markdown(
         transition: transform 0.2s ease;
     }
     .stButton>button:hover {
-        transform: scale(1.00);
+        transform: scale(2.00);
     }
     .stTextArea textarea {
         background: rgba(255, 255, 200, 0.8);
