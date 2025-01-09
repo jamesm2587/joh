@@ -199,4 +199,3 @@ with st.container():
         st.text_area("Generated Caption", value=caption, height=200)
 
     st.markdown("</div>", unsafe_allow_html=True)
-
