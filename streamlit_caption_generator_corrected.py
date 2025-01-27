@@ -1,6 +1,5 @@
 import streamlit as st
 from datetime import datetime, timedelta
-import pyperclip  # For copy-to-clipboard functionality
 
 # Custom CSS for gradients, shadows, and glass effects
 st.markdown(
@@ -204,10 +203,6 @@ with st.container():
     if st.button("Generate Caption"):
         caption = generate_caption(store, item_name, formatted_price, price_format, date_range, sale_type)
         st.text_area("Generated Caption", value=caption, height=200)
-
-        # Copy to clipboard button
-        if st.button("Copy to Clipboard"):
-            pyperclip.copy(caption)
-            st.success("Caption copied to clipboard!")
+        st.write("Manually copy the caption above.")
 
     st.markdown("</div>", unsafe_allow_html=True)
