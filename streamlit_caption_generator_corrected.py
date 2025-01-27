@@ -64,13 +64,6 @@ emoji_mapping = {
     "dessert": "🍰", "cake": "🎂", "cookie": "🍪", "ice cream": "🍦", "chocolate": "🍫"
 }
 
-# Function to fetch emoji
-def get_emoji(item_name):
-    for key in emoji_mapping:
-        if key in item_name.lower():
-            return emoji_mapping[key]
-    return "🍽️"
-
 # Store-specific data
 store_data = {
     "Ted's Fresh": {
@@ -115,6 +108,38 @@ store_data = {
     },
 }
 
+# Function to fetch emoji
+def get_emoji(item_name):
+    for key in emoji_mapping:
+        if key in item_name.lower():
+            return emoji_mapping[key]
+    return "🍽️"
+
+# Function to format price
+def format_price(price, price_format):
+    try:
+        price = float(price)
+        if price.is_integer():
+            return f"{int(price)}¢"
+        else:
+            return f"${price:.2f}"
+    except ValueError:
+        return "Invalid price entered"
+
+# Function to generate caption
+def generate_caption(store, item_name, price, price_format, date_range, sale_type=""):
+    store_info = store_data[store]
+    emoji = get_emoji(item_name)
+    formatted_price = f"{price} {price_format}" if price else "Price not entered"
+    return store_info["template"].format(
+        emoji=emoji,
+        item_name=item_name,
+        price=formatted_price,
+        date_range=date_range,
+        location=store_info["location"] if store_info["location"] else "",
+        hashtags=store_info["hashtags"],
+        sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
+    )
 
 # Streamlit App
 st.title("Enhanced Caption Generator")
@@ -172,30 +197,11 @@ with st.container():
             st.markdown('</div>', unsafe_allow_html=True)
 
     # Format price
-    if price:
-        try:
-            price = float(price)
-            if price.is_integer():
-                price = f"{int(price)}¢"
-            else:
-                price = f"${price:.2f}"
-        except ValueError:
-            price = "Invalid price entered"
+    formatted_price = format_price(price, price_format)
 
     # Generate caption
     if st.button("Generate Caption"):
-        store_info = store_data[store]
-        emoji = get_emoji(item_name)
-        formatted_price = f"{price} {price_format}" if price else "Price not entered"
-        caption = store_info["template"].format(
-            emoji=emoji,
-            item_name=item_name,
-            price=formatted_price,
-            date_range=date_range,
-            location=store_info["location"] if store_info["location"] else "",
-            hashtags=store_info["hashtags"],
-            sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
-        )
+        caption = generate_caption(store, item_name, formatted_price, price_format, date_range, sale_type)
         st.text_area("Generated Caption", value=caption, height=200)
 
     st.markdown("</div>", unsafe_allow_html=True)
