@@ -37,7 +37,7 @@ st.markdown(
     }
     .stTextInput, .stSelectbox, .stRadio, .stDateInput {
         display: inline-block;
-        width: calc(100% - 40px); /* Adjust width to make space for icons */
+        width: calc(100% - 40px);
     }
     .input-wrapper {
         display: flex;
@@ -108,101 +108,77 @@ store_data = {
     },
 }
 
-# Function to fetch emoji
 def get_emoji(item_name):
     for key in emoji_mapping:
         if key in item_name.lower():
             return emoji_mapping[key]
     return "🍽️"
 
-# Function to format price
 def format_price(price, price_format):
     try:
         price = float(price)
-        if price.is_integer():
-            return f"{int(price)}¢"
-        else:
-            return f"${price:.2f}"
+        return f"{int(price)}¢" if price.is_integer() else f"${price:.2f}"
     except ValueError:
         return "Invalid price entered"
 
-# Function to generate caption
 def generate_caption(store, item_name, price, price_format, date_range, sale_type=""):
     store_info = store_data[store]
-    emoji = get_emoji(item_name)
-    formatted_price = f"{price} {price_format}" if price else "Price not entered"
     return store_info["template"].format(
-        emoji=emoji,
+        emoji=get_emoji(item_name),
         item_name=item_name,
-        price=formatted_price,
+        price=f"{price} {price_format}" if price else "Price not entered",
         date_range=date_range,
-        location=store_info["location"] if store_info["location"] else "",
+        location=store_info["location"] or "",
         hashtags=store_info["hashtags"],
         sale_type=sale_type if "{sale_type}" in store_info["template"] else "",
     )
 
-# Streamlit App
 st.title("Enhanced Caption Generator")
 
-# Streamlit layout with styled container
 with st.container():
-    st.markdown("<div class='container'>", unsafe_allow_html=True)
-
     col1, col2 = st.columns([2, 1])
+    
     with col1:
-        # Item Name icon
-        st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
-        st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/shopping-cart.png" class="input-icon" />', unsafe_allow_html=True)
-        store = st.selectbox("Store", list(store_data.keys()), key="store")
-        item_name = st.text_input("Item Name", key="item_name")
-        st.markdown('</div>', unsafe_allow_html=True)
-        
-        # Price icon
-        st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
-        st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/price-tag.png" class="input-icon" />', unsafe_allow_html=True)
-        price_format = st.radio("Price Format", ("x lb", "x ea"), key="price_format")
-        st.markdown('</div>', unsafe_allow_html=True)
+        store = st.selectbox("Store", list(store_data.keys()))
+        item_name = st.text_input("Item Name")
+        price_format = st.radio("Price Format", ("x lb", "x ea"))
         
     with col2:
-        # Price input field
-        st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
-        st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/price-tag.png" class="input-icon" />', unsafe_allow_html=True)
-        price = st.text_input(f"Enter price {price_format}", key="price")
-        st.markdown('</div>', unsafe_allow_html=True)
-
-        # Single calendar for start and end dates
-        st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
-        st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/calendar.png" class="input-icon" />', unsafe_allow_html=True)
+        price = st.text_input(f"Enter price {price_format}")
         selected_dates = st.date_input(
             "Select Start and End Dates",
-            [datetime.today(), datetime.today() + timedelta(days=6)],
-            key="selected_dates"
+            [datetime.today(), datetime.today() + timedelta(days=6)]
         )
-
-        # Ensure both dates are selected
-        if len(selected_dates) == 2:
-            start_date, end_date = selected_dates
-            date_range = f"{start_date.strftime('%m/%d')} - {end_date.strftime('%m/%d')}"
-        else:
-            start_date = end_date = datetime.today()
-            date_range = "Please select both start and end dates."
-        st.markdown('</div>', unsafe_allow_html=True)
-
-        # Sale Type icon (if necessary)
+        
+        date_range = (
+            f"{selected_dates[0].strftime('%m/%d')} - {selected_dates[1].strftime('%m/%d')}"
+            if len(selected_dates) == 2 
+            else "Please select both dates"
+        )
+        
         sale_type = ""
         if store in ["Ted's Fresh", "IFM Market"]:
-            st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
-            st.markdown('<img src="https://img.icons8.com/ios-filled/50/808080/discount--v1.png" class="input-icon" />', unsafe_allow_html=True)
-            sale_type = st.selectbox("Sale Type", ["3 Day Sale", "4 Day Sale"], key="sale_type")
-            st.markdown('</div>', unsafe_allow_html=True)
+            sale_type = st.selectbox("Sale Type", ["3 Day Sale", "4 Day Sale"])
 
-    # Format price
-    formatted_price = format_price(price, price_format)
-
-    # Generate caption
     if st.button("Generate Caption"):
+        formatted_price = format_price(price, price_format)
         caption = generate_caption(store, item_name, formatted_price, price_format, date_range, sale_type)
+        
+        # Add copy functionality using native Streamlit features
+        st.markdown(f"""
+        <div style='position: relative;'>
+            <textarea id="captionText" style='position: absolute; left: -9999px;'>{caption}</textarea>
+            <button onclick="copyToClipboard()" style='background: #2575fc; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;'>
+                📋 Copy to Clipboard
+            </button>
+        </div>
+        <script>
+            function copyToClipboard() {{
+                const textarea = document.getElementById('captionText');
+                textarea.select();
+                document.execCommand('copy');
+            }}
+        </script>
+        """, unsafe_allow_html=True)
+        
         st.text_area("Generated Caption", value=caption, height=200)
-        st.write("Manually copy the caption above.")
-
-    st.markdown("</div>", unsafe_allow_html=True)
