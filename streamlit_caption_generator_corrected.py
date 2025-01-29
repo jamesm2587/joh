@@ -94,7 +94,7 @@ emoji_mapping = {
     "dessert": "🍰", "cake": "🎂", "cookie": "🍪", "ice cream": "🍦", "chocolate": "🍫"
 }
 
-# Complete store data with all locations
+# Complete store data
 store_data = {
     "Ted's Fresh": {
         "template": "{sale_type} ⏰\n{emoji} {item_name} {price}\nOnly {date_range}\n.\n.\n{hashtags}",
@@ -138,28 +138,48 @@ store_data = {
     },
 }
 
-def validate_price(price):
+def validate_price(price_str):
+    """Smart price validation that handles both dollar and cent formats"""
+    if not price_str:
+        return False, "Please enter a price"
+    
+    if '.' in price_str:
+        try:
+            float(price_str)
+            return True, ""
+        except ValueError:
+            return False, "Invalid dollar format (e.g. 3.99)"
+    else:
+        try:
+            int(price_str)
+            return True, ""
+        except ValueError:
+            return False, "Invalid cents format (e.g. 99)"
+
+def format_price(price_str, price_format):
+    """Auto-format price with intelligent dollar/cent detection"""
     try:
-        float(price)
-        return True, ""
+        if '.' in price_str:  # Dollar format
+            amount = float(price_str)
+            formatted = f"${amount:.2f}"
+        else:  # Cent format
+            cents = int(price_str)
+            formatted = f"{cents}¢"
+        
+        # Add measurement unit
+        if price_format == "x lb":
+            return f"{formatted}/lb"
+        return f"{formatted} each"
+    
     except ValueError:
-        return False, "Please enter a valid number for price"
+        return "Invalid price format"
 
 def get_emoji(item_name):
     item_lower = item_name.lower()
     for keyword, emoji in emoji_mapping.items():
         if keyword in item_lower:
             return emoji
-    return "🛒"
-
-def format_price(price, price_format):
-    try:
-        price = float(price)
-        if price_format == "x lb":
-            return f"${price:.2f}/lb" if price >= 1 else f"{int(price*100)}¢/lb"
-        return f"${price:.2f} each" if price >= 1 else f"{int(price*100)}¢ each"
-    except:
-        return "Invalid price format"
+    return "🛒"  # Default shopping cart emoji
 
 def generate_caption(store, item_name, price, price_format, date_range, sale_type=""):
     store_info = store_data[store]
@@ -178,16 +198,16 @@ if 'preview' not in st.session_state:
     st.session_state.preview = ""
 
 # App Header
-st.title("🛒 Social Media Caption Generator")
+st.title("🛒 Smart Social Media Caption Generator")
 st.markdown("""
 <div style="text-align: center; margin: 2rem 0;">
     <div style="font-size: 1.5rem; color: #4f46e5; margin-bottom: 1rem;">
-        Create Engaging Grocery Store Posts
+        Create Perfect Grocery Store Posts Automatically
     </div>
     <div style="display: flex; justify-content: center; gap: 1rem;">
-        <div style="animation: float 3s ease-in-out infinite;">🛍️</div>
-        <div style="animation: float 3s ease-in-out infinite 0.5s;">📸</div>
-        <div style="animation: float 3s ease-in-out infinite 1s;">💬</div>
+        <div style="animation: float 3s ease-in-out infinite;">💰</div>
+        <div style="animation: float 3s ease-in-out infinite 0.5s;">📅</div>
+        <div style="animation: float 3s ease-in-out infinite 1s;">📱</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -201,8 +221,8 @@ with st.form("caption_form"):
         item_name = st.text_input("📦 Item Name", placeholder="e.g., Organic Strawberries")
         
     with col2:
-        price_format = st.radio("💰 Price Format", ("x lb", "x ea"), horizontal=True)
-        price = st.text_input("💵 Enter Price", placeholder="e.g., 2.99")
+        price_format = st.radio("📏 Price Format", ("x lb", "x ea"), horizontal=True)
+        price = st.text_input("💵 Enter Price", placeholder="e.g., 3.99 or 99")
     
     date_col, sale_col = st.columns(2)
     with date_col:
@@ -315,6 +335,6 @@ st.markdown("---")
 st.markdown("""
 <div style="text-align: center; color: #64748b; margin-top: 2rem;">
     <div>Made with ❤️ using Streamlit</div>
-    <div style="font-size: 0.875rem; margin-top: 0.5rem;">🛒 Includes all store templates • Real-time preview • Export options</div>
+    <div style="font-size: 0.875rem; margin-top: 0.5rem;">🔍 Smart Price Detection • Auto-Emoji Matching • Store Templates</div>
 </div>
 """, unsafe_allow_html=True)
